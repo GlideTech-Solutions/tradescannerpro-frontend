@@ -90,6 +90,9 @@
               max-width: max-content;
     height: calc(100vh - 349px);
                 margin: 0 auto;
+                @media (max-width : "767px") {
+                    height: auto;
+                }
 
                 img {
                     width: 100%;

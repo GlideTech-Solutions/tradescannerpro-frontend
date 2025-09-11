@@ -51,7 +51,7 @@ export default function ChartCard() {
   const changePct = +(((lastClose - data[0].price) / data[0].price) * 100).toFixed(2);
 
   return (
-    <div className={`cards ${isDarkMode ? 'dark' : ''}`}>
+    <div className={`cards ${isDarkMode ? 'cards-dark' : 'cards-light'}`}>
       {/* Header */}
       <div className="headers">
         <div className="tokens">

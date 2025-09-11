@@ -227,12 +227,20 @@
 
 
 /* components/ChartCard.module.css */
+.cards-dark{
+background: rgba(14, 38, 58, 1);
+
+}
+.cards-light{
+  background: linear-gradient(180deg, #F4F5FF 0%, #E1E2F3 100%);;
+}
 .cards {
   // background: radial-gradient(120% 120% at 0% 0%, #0a2133 0%, #0a1622 50%, #0a1520 100%);
   // border: 1px solid #14334a;
   // box-shadow: 0 0 0 1px rgba(20, 51, 74, 0.25) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
   border: 1.5px solid #C8C8E3;
-  background: linear-gradient(180deg, #F4F5FF 0%, #E1E2F3 100%);
+  
+
   border-radius: 30px;
   padding: 30px;
 
