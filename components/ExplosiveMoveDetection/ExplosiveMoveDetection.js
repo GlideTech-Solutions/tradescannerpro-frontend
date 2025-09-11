@@ -23,7 +23,7 @@ export default function ExplosiveMoveDetection() {
 
             <div className='explosice-move-detection-alignment'>
                 <div className='welcome-line'>
-                    <p>Welcome to CoinPulse1</p>
+                    <p>Welcome to CoinPulse</p>
 
                     <h1 className={`${isDarkMode ? 'dark' : ''}`}>Professional Crypto Scanner for Explosive Move Detection</h1>
                     <div className='run-button-alignment'>
