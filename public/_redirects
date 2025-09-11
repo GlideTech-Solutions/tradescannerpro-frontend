@@ -1,0 +1,2 @@
+# Redirect everything else to index.html (for SPAs / Next.js exports)
+/*    /index.html   200
