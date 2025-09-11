@@ -36,7 +36,7 @@ export default function MoveOpportunities() {
                                 </div>
 
                                 <div className='moveOpportunoties-right-side-alignment'>
-                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</h3>
+                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504</h3>
                                     <div className='rate-alignemnt'>
                                         <img src='/assets/icons/up-arrow.svg' alt='up arrow' />
                                         <p className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</p>
@@ -213,7 +213,7 @@ export default function MoveOpportunities() {
                                 </div>
 
                                 <div className='moveOpportunoties-right-side-alignment'>
-                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</h3>
+                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504</h3>
                                     <div className='rate-alignemnt'>
                                         <img src='/assets/icons/up-arrow.svg' alt='up arrow' />
                                         <p className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</p>
@@ -390,7 +390,7 @@ export default function MoveOpportunities() {
                                 </div>
 
                                 <div className='moveOpportunoties-right-side-alignment'>
-                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</h3>
+                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504</h3>
                                     <div className='rate-alignemnt'>
                                         <img src='/assets/icons/up-arrow.svg' alt='up arrow' />
                                         <p className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</p>
@@ -567,7 +567,7 @@ export default function MoveOpportunities() {
                                 </div>
 
                                 <div className='moveOpportunoties-right-side-alignment'>
-                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</h3>
+                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504</h3>
                                     <div className='rate-alignemnt'>
                                         <img src='/assets/icons/up-arrow.svg' alt='up arrow' />
                                         <p className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</p>
@@ -744,7 +744,7 @@ export default function MoveOpportunities() {
                                 </div>
 
                                 <div className='moveOpportunoties-right-side-alignment'>
-                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</h3>
+                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504</h3>
                                     <div className='rate-alignemnt'>
                                         <img src='/assets/icons/up-arrow.svg' alt='up arrow' />
                                         <p className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</p>
@@ -921,7 +921,7 @@ export default function MoveOpportunities() {
                                 </div>
 
                                 <div className='moveOpportunoties-right-side-alignment'>
-                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</h3>
+                                    <h3 className={`${isDarkMode ? 'dark' : ''}`}>$0.1504</h3>
                                     <div className='rate-alignemnt'>
                                         <img src='/assets/icons/up-arrow.svg' alt='up arrow' />
                                         <p className={`${isDarkMode ? 'dark' : ''}`}>$0.1504 (1d)</p>
