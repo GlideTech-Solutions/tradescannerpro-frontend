@@ -1,0 +1,103 @@
+@import "../../app/globals.scss";
+
+.explosice-move-detection-section {
+
+
+    .explosice-move-detection-alignment {
+        .welcome-line {
+            max-width: 770px;
+            margin: 0 auto;
+
+            p {
+                
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 100%;
+                letter-spacing: -2%;
+                color: $purple-1;
+
+            }
+
+            h1 {
+                
+                font-weight: 400;
+                font-size: 32px;
+                line-height: 130%;
+                letter-spacing: -4%;
+                text-align: center;
+                color: $black-1;
+                margin: 8px 0 0 0;
+
+                @media (max-width : "767px") {
+                    font-size: 24px;
+                }
+
+                &.dark {
+                    color: $white-1;
+                }
+
+            }
+
+            .run-button-alignment {
+                margin: 20px 0 0 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                button {
+                    background: linear-gradient(21deg, #427DFF 8.39%, #7023FF 20.31%, #174DBA 50.95%, #8A6EFF 69.67%, #52B4FF 88.4%, #8A6EFF 93.51%);
+                    border-radius: 50px;
+                    padding: 16px 56px;
+                    border: none;
+                    
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 100%;
+                    letter-spacing: -2%;
+                    text-align: center;
+                    color: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+
+                }
+            }
+        }
+
+        .explosice-bottom-section {
+            margin: 40px 0 0 0;
+
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            @media (max-width : "767px") {
+                margin: 60px 0 0 0;
+            }
+
+            .bg-video {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                z-index: -1;
+            }
+
+            .explosive-img-section {
+              max-width: max-content;
+    height: calc(100vh - 349px);
+                margin: 0 auto;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    display: block;
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}

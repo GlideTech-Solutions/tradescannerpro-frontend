@@ -1,0 +1,51 @@
+# production
+build
+node_modules
+coverage
+.next/
+.idea/
+
+# misc
+.DS_Store
+.env.local
+.env.development
+.env.production
+
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+git*.sh
+/.vscode
+src/constant.js
+src/constant_dev.js
+src/constant_live.js
+sonar-project.properties
+# Sentry Auth Token
+.sentryclirc
+
+
+# PWA files
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map
+
+# ---- SonarQube
+.sonar/
+.scannerwork/
+
+# scripts patches, they are local to each developer
+scripts/patches/*.*
+scripts/patches/*license*.txt
+!scripts/patches/debug_ce.sh
+!scripts/patches/debug_web.sh
+!scripts/patches/postgres.sh
+gherkin-features/
+# Sentry Config File
+.env.sentry-build-plugin

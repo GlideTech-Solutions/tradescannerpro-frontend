@@ -1,0 +1,168 @@
+$slate-50: #f8fafc;
+$slate-100: #f1f5f9;
+$slate-200: #e2e8f0;
+$slate-300: #cbd5e1;
+$slate-400: #94a3b8;
+$slate-500: #64748b;
+$slate-600: #475569;
+$slate-700: #334155;
+$slate-800: #1e293b;
+$slate-900: #0f172a;
+$slate-950: linear-gradient(180deg,
+    rgba(0, 53, 96, 1) 0%,
+    rgba(0, 0, 0, 1) 100%);
+
+
+$purple-50: #faf5ff;
+$purple-100: #f3e8ff;
+$purple-200: #e9d5ff;
+$purple-300: #d8b4fe;
+$purple-400: #c084fc;
+$purple-500: #a855f7;
+$purple-600: #9333ea;
+$purple-700: #7e22ce;
+$purple-800: #6b21a8;
+$purple-900: #581c87;
+$purple-950: #3b0764;
+
+
+$purple-1: #8BB9FF;
+
+
+
+$black-1 : #001D34;
+
+$white-1 : #D1D6F3;
+
+body {
+  margin: 0;
+}
+
+:root {
+  background-color: white;
+  color: $slate-950;
+
+  &.dark {
+    background: $slate-950;
+    color: $slate-100;
+  }
+}
+
+
+
+
+body {
+  margin: 0;
+  padding: 0;
+
+    font-family: '__gotham_43a0f8', '__gotham_Fallback_43a0f8';
+
+}
+
+button{
+    font-family: '__gotham_43a0f8', '__gotham_Fallback_43a0f8';
+  cursor: pointer;
+}
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+p:last-child {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+.toggle-button {
+  border-radius: 999px;
+  background-color: #8085FF;
+  padding: 0;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 36px;
+  margin: 36px;
+  padding: 10px;
+  cursor: pointer;
+  position: fixed;
+  right: 10px;
+  top: 20%;
+  z-index: 999;
+
+  &:hover {
+    background-color: $purple-400;
+  }
+
+  .icon {
+
+    color: white;
+  }
+}
+
+.card {
+  overflow: hidden;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+
+  &.light {
+    background-color: $slate-600;
+    color: $slate-200;
+  }
+
+  &.dark {
+    background-color: $slate-200;
+    color: $slate-950;
+  }
+}
+
+// Basic styling for the page
+
+.container {
+
+  min-height: 100vh;
+}
+
+.content {
+  margin: auto;
+  text-align: center;
+}
+
+.custom-light-dark-theme-section {
+  position: fixed;
+  right: 10px;
+  top: 30%;
+  transform: translateY(-50%);
+
+  background: #DDDDDD;
+  border-radius: 50px;
+
+
+  .custom-icon-alignment {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &.sun-bg {
+      background: #8085FF;
+    }
+  }
+}

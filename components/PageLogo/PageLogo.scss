@@ -1,0 +1,11 @@
+.pageLogo-section {
+  padding: 40px 0;
+  cursor: pointer;
+
+    max-width: 200px;
+    margin: 0 auto;
+
+    @media (max-width : "767px") {
+        padding: 20px 0;
+    }
+}

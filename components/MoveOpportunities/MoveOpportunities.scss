@@ -1,0 +1,333 @@
+@import "../../app/globals.scss";
+
+.moveOpportunities-section {
+    .moveOpportunities-welcome-line {
+        max-width: 570px;
+        margin: 0 auto;
+
+        p {
+            
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 100%;
+            letter-spacing: -2%;
+            color: $purple-1;
+
+        }
+
+        h1 {
+            
+            font-weight: 400;
+            font-size: 32px;
+            line-height: 130%;
+            letter-spacing: -4%;
+            text-align: center;
+            color: $black-1;
+            margin: 8px 0 0 0;
+
+            @media (max-width : "767px") {
+                font-size: 24px;
+            }
+
+            &.dark {
+                color: $white-1;
+            }
+
+        }
+
+
+    }
+
+    .moveOpportunities-details-alignment {
+        margin: 40px 0 0 0;
+        padding: 0 20px 20px 20px;
+
+        .moveOpportunities-grid-alignment {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+
+            @media (max-width : "1279px") {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            @media (max-width : "767px") {
+                grid-template-columns: repeat(1, 1fr);
+            }
+
+            .moveOpportunities-grid-item-alignment {
+                border: 1.5px solid #C8C8E3;
+                background: linear-gradient(180deg, #F4F5FF 0%, #E1E2F3 100%);
+                padding: 30px;
+                border-radius: 30px;
+
+                @media (max-width : "767px") {
+                    padding: 16px;
+                }
+
+                &.dark {
+                    border: 1.5px solid #8BB9FF4D;
+                    background: #0E263A;
+
+                }
+
+                .moveOpportunities-top-heading {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .moveOpportunoties-left-side-alignment {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+
+                        .company-logo-alignment {
+                            width: 56px;
+                            height: 56px;
+
+                            img {
+                                width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                border-radius: 50%;
+                            }
+                        }
+
+                        .company-name-alignment {
+                            h2 {
+                                
+                                font-weight: 700;
+                                font-size: 22px;
+                                line-height: 100%;
+                                letter-spacing: 0%;
+                                color: #001D34;
+
+                                &.dark {
+                                    color: #FFFFFF;
+                                }
+                            }
+
+                            p {
+                                padding: 5px 0 0 0;
+                                
+                                font-weight: 400;
+                                font-size: 14px;
+                                line-height: 100%;
+                                letter-spacing: 0%;
+                                color: rgba(0, 29, 52, 0.7);
+
+                                &.dark {
+                                    color: rgba(255, 255, 255, 0.7);
+                                }
+
+                            }
+                        }
+                    }
+
+                    .moveOpportunoties-right-side-alignment {
+                        h3 {
+                            
+                            font-size: 28px;
+                            line-height: 130%;
+                            font-weight: 600;
+                            letter-spacing: 0%;
+                            text-align: center;
+                            color: #001D34;
+
+                            &.dark {
+                                color: #FFFFFF;
+                            }
+                        }
+
+                        .rate-alignemnt {
+                            display: flex;
+                            align-items: center;
+
+                            p {
+                                
+                                font-weight: 350;
+                                font-size: 14px;
+                                line-height: 100%;
+                                letter-spacing: 0%;
+                                color: #12C59F;
+                            }
+                        }
+                    }
+                }
+
+                .moveOpportunities-child-list-alignment {
+                    margin: 30px 0 0 0;
+
+                    .moveOpportunities-child-details-alignment {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin: 0 0 9px 0;
+
+                        &:last-child {
+                            margin: 0;
+                        }
+
+                        .moveOpportunities-child-left-alignment {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+
+                            .moveOpportunities-icon {
+                                width: 16px;
+                                height: 16px;
+
+                                img {
+                                    width: 100%;
+                                    height: 100%;
+                                    display: block;
+                                }
+                            }
+
+                            .moveOpportunities-name {
+                                span {
+                                    
+                                    font-weight: 400;
+                                    font-size: 14px;
+                                    line-height: 100%;
+                                    letter-spacing: 0%;
+                                    color: rgba(0, 29, 52, 0.8);
+
+                                    &.dark {
+                                        color: rgba(255, 255, 255, 0.8);
+                                    }
+                                }
+                            }
+                        }
+
+                        .right-side-price {
+                            h6 {
+                                
+                                font-weight: 600;
+                                font-size: 14px;
+                                line-height: 100%;
+                                letter-spacing: 0%;
+                                color: #001D34;
+
+                                &.dark {
+                                    color: #fff;
+                                }
+
+                            }
+
+
+                            .buy-now-alignment {
+                                button {
+                                    background: #12C59F;
+                                    padding: 2px 5px;
+                                    border: none;
+                                    
+                                    font-weight: 700;
+                                    font-size: 14px;
+                                    line-height: 100%;
+                                    letter-spacing: 0%;
+                                    text-transform: uppercase;
+                                    color: #FFFFFF;
+                                    border-radius: 3px;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .moveOpportunities-option-details {
+                    margin: 30px 0 0 0;
+
+                    .moveOpportunities-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 10px;
+
+                        .moveOpportunities-grid-item {
+                            background: #FFFFFFB2;
+                            border-radius: 10px;
+                            height: 70px;
+                            width: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-direction: column;
+                            gap: 10px;
+
+                            span {
+                                
+                                font-weight: 400;
+                                font-size: 14px;
+                                line-height: 100%;
+                                letter-spacing: 0%;
+                                color: #001D34;
+
+                                &.dark {
+                                    color: rgba(255, 255, 255, 0.7);
+                                }
+
+                            }
+
+                            .rating-alignment {
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 5px;
+
+                                h6 {
+                                    
+                                    font-weight: 350;
+                                    font-size: 16px;
+                                    line-height: 100%;
+                                    letter-spacing: 0%;
+                                    color: #12C59F;
+                                }
+                            }
+
+                            &.dark {
+                                border: 1px solid #3A4855;
+                                background: #05182A;
+
+                            }
+                        }
+                    }
+                }
+
+                .moveOpportunities-view-chart-alignment {
+                    margin: 30px 0 0 0;
+
+                    button {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 100%;
+                        letter-spacing: -2%;
+                        text-align: center;
+                        width: 100%;
+                        height: 48px;
+                        background: transparent;
+                        color: #001D34;
+                        border: 1px solid #001D3480;
+                        border-radius: 100px;
+
+                        &.dark {
+                            color: #8085FF;
+                            background: #8085FF26;
+
+                        }
+
+                        img {
+                            width: 24px;
+                            height: 24px;
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
