@@ -37,13 +37,19 @@ export default function ExplosiveMoveDetection() {
 
                 <div className='explosice-bottom-section'>
 
-                  <ThemeVideo
+                  {/* <ThemeVideo
   darkSrc="/assets/video/dark_video_wave.mp4"
   lightSrc="/assets/video/light_video_wave.mp4"
   className="bg-video"
-/>
+/> */}
                     <div className='explosive-img-section'>
-                        <img src='/assets/images/explosive-img.png' alt='explosive img' />
+                        {
+                            isDarkMode ?
+                                <img src='/assets/images/dark-explosive-img.png' alt='explosive img dark' />
+                                :
+                                <img src='/assets/images/light-explosive-img.png' alt='explosive img light' />
+                        }
+                        
                     </div>
                 </div>
             </div>

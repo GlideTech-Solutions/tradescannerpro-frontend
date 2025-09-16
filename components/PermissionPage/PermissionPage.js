@@ -23,11 +23,11 @@ export default function PermissionPage() {
 
                 <div className='permission-page-bottom-section'>
 
-                     <ThemeVideo
+                     {/* <ThemeVideo
                      darkSrc="/assets/video/dark_video_wave.mp4"
                      lightSrc="/assets/video/light_video_wave.mp4"
                      className="bg-video"
-                   />
+                   /> */}
                     <div className='explosive-img-section'>
                         <img src='/assets/images/permission-icon.png' alt='permission img' />
                     </div>

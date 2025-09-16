@@ -27,14 +27,14 @@ export default function MarketBreakouts() {
                     </div>
                 </div>
 
-                <div className='market-breakout-bottom-section'>
+                {/* <div className='market-breakout-bottom-section'>
                   
-                    {/* <img src='/assets/images/explosive-img.png' alt='explosive img' /> */}
+                    <img src='/assets/images/explosive-img.png' alt='explosive img' />
 
                    <video autoPlay muted loop playsInline className="">
                         <source src="/assets/video/marketBreakout.mp4" type="video/mp4" />
                     </video>
-                </div>
+                </div> */}
             </div>
 
         </div>

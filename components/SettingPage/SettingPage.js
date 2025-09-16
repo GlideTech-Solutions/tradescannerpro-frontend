@@ -158,13 +158,13 @@ export default function SettingPage() {
                     </button>
                 </div>
             </div>
-            <div className='setting-bg-video'>
+            {/* <div className='setting-bg-video'>
                 <ThemeVideo
                 darkSrc="/assets/video/dark_video_wave.mp4"
                 lightSrc="/assets/video/light_video_wave.mp4"
                 className="bg-video"
               />
-            </div>
+            </div> */}
 
         </div>
     )

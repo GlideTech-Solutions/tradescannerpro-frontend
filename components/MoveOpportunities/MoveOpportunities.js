@@ -313,7 +313,7 @@ export default function MoveOpportunities() {
                                     <div className='moveOpportunities-child-left-alignment'>
                                         <div className='moveOpportunities-icon'>
                                             {isDarkMode ? (
-                                                <img src='/assets/icons/ranking-podium-empty.svg' alt='ranking podium empty ' />
+                                                <img src='/assets/icons/gray-ranking-podium-empty.svg' alt='ranking podium empty ' />
 
                                             ) : (
 
@@ -490,7 +490,7 @@ export default function MoveOpportunities() {
                                     <div className='moveOpportunities-child-left-alignment'>
                                         <div className='moveOpportunities-icon'>
                                             {isDarkMode ? (
-                                                <img src='/assets/icons/ranking-podium-empty.svg' alt='ranking podium empty ' />
+                                                <img src='/assets/icons/gray-ranking-podium-empty.svg' alt='ranking podium empty ' />
 
                                             ) : (
 
@@ -667,7 +667,7 @@ export default function MoveOpportunities() {
                                     <div className='moveOpportunities-child-left-alignment'>
                                         <div className='moveOpportunities-icon'>
                                             {isDarkMode ? (
-                                                <img src='/assets/icons/ranking-podium-empty.svg' alt='ranking podium empty ' />
+                                                <img src='/assets/icons/gray-ranking-podium-empty.svg' alt='ranking podium empty ' />
 
                                             ) : (
 
@@ -844,7 +844,7 @@ export default function MoveOpportunities() {
                                     <div className='moveOpportunities-child-left-alignment'>
                                         <div className='moveOpportunities-icon'>
                                             {isDarkMode ? (
-                                                <img src='/assets/icons/ranking-podium-empty.svg' alt='ranking podium empty ' />
+                                                <img src='/assets/icons/gray-ranking-podium-empty.svg' alt='ranking podium empty ' />
 
                                             ) : (
 
@@ -1021,7 +1021,7 @@ export default function MoveOpportunities() {
                                     <div className='moveOpportunities-child-left-alignment'>
                                         <div className='moveOpportunities-icon'>
                                             {isDarkMode ? (
-                                                <img src='/assets/icons/ranking-podium-empty.svg' alt='ranking podium empty ' />
+                                                <img src='/assets/icons/gray-ranking-podium-empty.svg' alt='ranking podium empty ' />
 
                                             ) : (
 
