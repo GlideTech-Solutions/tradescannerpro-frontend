@@ -4,55 +4,23 @@ import "./MoveOpportunities.scss";
 import { useTheme } from '../../context/ThemeContext';
 import { useScan } from '../../context/ScanContext';
 import { useRouter } from 'next/navigation';
-import Loading from '../Loading';
 import { formatScanTime } from '../../lib/timeUtils';
 
 export default function MoveOpportunities() {
     const { isDarkMode } = useTheme();
-    const { scanResult, isLoading, lastScanTime } = useScan();
+    const { scanResult, lastScanTime } = useScan();
     const router = useRouter();
 
+    // Redirect to market-breakouts if no scan data available
+    React.useEffect(() => {
+        if (!scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0) {
+            router.push('/market-breakouts');
+        }
+    }, [scanResult, router]);
 
-    // Show loading state
-    if (isLoading) {
-        return (
-            <div>
-                <PageHeader />
-                <Loading message="Processing scan results..." />
-            </div>
-        );
-    }
-
-    // Show empty state if no scan results
+    // Don't render anything if no scan data (will redirect)
     if (!scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0) {
-        return (
-            <div>
-                <PageHeader />
-                <div className='moveOpportunities-section'>
-                    <div className='moveOpportunities-welcome-line'>
-                        <h1 className={`${isDarkMode ? 'dark' : ''}`}>No Scan Results Found</h1>
-                        <p style={{ textAlign: 'center', marginTop: '20px' }}>
-                            Please run a market scan first to see move opportunities.
-                        </p>
-                        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                            <button 
-                                onClick={() => router.push('/market-breakouts')}
-                                style={{
-                                    padding: '12px 24px',
-                                    backgroundColor: '#007bff',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Run Market Scan
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+        return null;
     }
 
 
