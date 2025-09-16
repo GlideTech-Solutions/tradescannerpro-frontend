@@ -1,6 +1,6 @@
 import React from 'react'
 import "./PageLogo.scss";
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useRouter } from 'next/navigation';
 
 export default function PageLogo() {

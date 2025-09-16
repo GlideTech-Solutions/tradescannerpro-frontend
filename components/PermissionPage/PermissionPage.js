@@ -1,8 +1,6 @@
-import React from 'react'
-import PageLogo from '../PageLogo/PageLogo'
+import { useTheme } from '../../context/ThemeContext';
+import PageLogo from '../PageLogo/PageLogo';
 import "./PermissionPage.scss";
-import { useTheme } from '@/context/ThemeContext';
-import ThemeVideo from '../ThemeVideo';
 export default function PermissionPage() {
     const { isDarkMode } = useTheme();
     return (

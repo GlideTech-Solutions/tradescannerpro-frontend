@@ -27,6 +27,103 @@
       }
     }
 
+    // Coin Information Section Styles
+    .coin-info-section {
+      margin: 20px 0;
+      
+      .coin-info-card {
+        background: #FFFFFFB2;
+        border-radius: 15px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1.5px solid #C8C8E3;
+        
+        &.dark {
+          background: #0E263A;
+          border: 1.5px solid #8BB9FF4D;
+        }
+
+        .coin-info-left {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          
+          .coin-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            
+            @media (max-width: 767px) {
+              width: 50px;
+              height: 50px;
+            }
+          }
+          
+          .coin-details {
+            .coin-symbol {
+              font-weight: 700;
+              font-size: 22px;
+              color: #001D34;
+              margin-bottom: 5px;
+              
+              @media (max-width: 767px) {
+                font-size: 18px;
+              }
+            }
+            
+            .coin-name {
+              font-weight: 400;
+              font-size: 14px;
+              color: rgba(0, 29, 52, 0.7);
+            }
+          }
+        }
+        
+        .coin-info-right {
+          text-align: right;
+          
+          .coin-price {
+            font-weight: 600;
+            font-size: 28px;
+            color: #001D34;
+            margin-bottom: 5px;
+            
+            @media (max-width: 767px) {
+              font-size: 22px;
+            }
+          }
+          
+          .coin-volume {
+            font-weight: 350;
+            font-size: 14px;
+            color: #12C59F;
+          }
+        }
+        
+        // Dark mode styles
+        &.dark {
+          .coin-info-left .coin-details {
+            .coin-symbol {
+              color: #FFFFFF;
+            }
+            
+            .coin-name {
+              color: rgba(255, 255, 255, 0.7);
+            }
+          }
+          
+          .coin-info-right {
+            .coin-price {
+              color: #FFFFFF;
+            }
+          }
+        }
+      }
+    }
+
     .moveOpportunities-child-box-alignment {
 
       margin: 30px 0 0 0;
@@ -140,7 +237,7 @@
 
         .moveOpportunities-child-bottom-grid {
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
+          grid-template-columns: repeat(4, 1fr);
           gap: 20px;
 
           @media (max-width : 972px) {
@@ -437,7 +534,7 @@ background: rgba(14, 38, 58, 1);
 
 .statsRow {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-top: 14px;
 }

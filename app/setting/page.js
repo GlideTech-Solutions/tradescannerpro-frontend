@@ -1,7 +1,7 @@
 "use client";
 
-import SettingPage from "@/components/SettingPage/SettingPage";
-import ThemeToggleBtn from "@/components/ThemeToggleBtn";
+import SettingPage from "../../components/SettingPage/SettingPage";
+import ThemeToggleBtn from "../../components/ThemeToggleBtn";
 
 export default function Home() {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
-import ChildMoveOpportunities from "@/components/ChildMoveOpportunities/ChildMoveOpportunities";
-import ThemeToggleBtn from "@/components/ThemeToggleBtn";
+import ChildMoveOpportunities from "../../components/ChildMoveOpportunities/ChildMoveOpportunities";
+import ThemeToggleBtn from "../../components/ThemeToggleBtn";
 
 export default function Home() {
   return (

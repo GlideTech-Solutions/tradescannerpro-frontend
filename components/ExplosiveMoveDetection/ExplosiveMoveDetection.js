@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PageLogo from '../PageLogo/PageLogo'
 import "./ExplosiveMoveDetection.scss";
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useRouter } from "next/navigation";
 import ThemeVideo from '../ThemeVideo';
 

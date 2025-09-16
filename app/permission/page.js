@@ -1,7 +1,7 @@
 "use client";
 
-import PermissionPage from "@/components/PermissionPage/PermissionPage";
-import ThemeToggleBtn from "@/components/ThemeToggleBtn";
+import PermissionPage from "../../components/PermissionPage/PermissionPage";
+import ThemeToggleBtn from "../../components/ThemeToggleBtn";
 
 export default function Home() {
   return (

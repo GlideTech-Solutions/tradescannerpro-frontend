@@ -1,6 +1,6 @@
 "use client";
 
-import MoveOpportunities from "../../components/MoveOpportunities/MoveOpportunities";
+import ExplosiveMoveDetection from "../../components/ExplosiveMoveDetection/ExplosiveMoveDetection";
 import ThemeToggleBtn from "../../components/ThemeToggleBtn";
 
 export default function Home() {
@@ -9,7 +9,7 @@ export default function Home() {
       <div className="content">
         <ThemeToggleBtn />
 
-        <MoveOpportunities />
+        <ExplosiveMoveDetection />
       </div>
     </main>
   );

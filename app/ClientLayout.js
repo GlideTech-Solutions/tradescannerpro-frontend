@@ -1,7 +1,9 @@
 "use client";
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ThemeProvider } from '../context/ThemeContext';
+import { ScanProvider } from '../context/ScanContext';
 import ThemeVideo from '../components/ThemeVideo';
 import { usePathname } from 'next/navigation';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 export default function ClientLayout({ children, gotham }) {
   const pathname = usePathname();
@@ -21,24 +23,28 @@ export default function ClientLayout({ children, gotham }) {
   return (
     <body className={gotham} style={{position: 'relative', minHeight: '100vh', overflow: ''}}>
       <ThemeProvider>
-        <ThemeVideo
-          key={pathname} // force remount on route change
-          darkSrc={darkSrc}
-          lightSrc={lightSrc}
-          style={{
-            position: 'fixed',
-            top: top,
-            left: 0,
-            width: '100vw',
-            height: videoHeight,
-            objectFit: 'cover',
-            zIndex: 0,
-            pointerEvents: 'none',
-          }}
-        />
-        <div style={{position: 'relative', zIndex: 1}}>
-          {children}
-        </div>
+        <ScanProvider>
+          <ThemeVideo
+            key={pathname} // force remount on route change
+            darkSrc={darkSrc}
+            lightSrc={lightSrc}
+            style={{
+              position: 'fixed',
+              top: top,
+              left: 0,
+              width: '100vw',
+              height: videoHeight,
+              objectFit: 'cover',
+              zIndex: 0,
+              pointerEvents: 'none',
+            }}
+          />
+          <div style={{position: 'relative', zIndex: 1}}>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </div>
+        </ScanProvider>
       </ThemeProvider>
     </body>
   );

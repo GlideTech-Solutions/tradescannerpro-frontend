@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ThemeVideo({ darkSrc, lightSrc, className = '', style = {}, ...props }) {
     const { isDarkMode } = useTheme();

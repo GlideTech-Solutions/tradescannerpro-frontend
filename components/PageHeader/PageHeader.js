@@ -1,11 +1,23 @@
 import React from 'react'
 import "./PageHeader.scss";
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useRouter } from 'next/navigation';
+import apiClient from '../../lib/api-client';
 
 export default function PageHeader() {
     const { isDarkMode } = useTheme();
     const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await apiClient.logout();
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Force redirect even if API call fails
+            window.location.href = '/login';
+        }
+    };
+
     return (
         <div className='pageHeader-section'>
             <div className='pageHeader-alignment'>
@@ -35,6 +47,9 @@ export default function PageHeader() {
                                 router.push('/setting');
                             }}>
                                 Settings</li>
+                            <li className={`${isDarkMode ? 'dark' : ''}`}
+                            onClick={handleLogout}>
+                                Logout</li>
                         </ul>
                     </div>
                     <div className='headerrun-button-alignment'>

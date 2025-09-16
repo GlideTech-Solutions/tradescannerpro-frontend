@@ -1,7 +1,7 @@
 "use client";
 
-import ExplosiveMoveDetection from "@/components/ExplosiveMoveDetection/ExplosiveMoveDetection";
-import ThemeToggleBtn from "@/components/ThemeToggleBtn";
+import ExplosiveMoveDetection from "../components/ExplosiveMoveDetection/ExplosiveMoveDetection";
+import ThemeToggleBtn from "../components/ThemeToggleBtn";
 
 export default function Home() {
   return (

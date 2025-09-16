@@ -1,7 +1,7 @@
 import React from 'react'
 import PageLogo from '../PageLogo/PageLogo'
 import "./SettingPage.scss";
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import PageHeader from '../PageHeader/PageHeader';
 import ThemeVideo from '../ThemeVideo';
 import { useRouter } from 'next/navigation';
@@ -141,9 +141,9 @@ export default function SettingPage() {
 
                         <div className='setting-page-right-side-alignment'>
                             <div className='number-setting-alignment'>
-                                <label class="switch">
+                                <label className="switch">
                                     <input type="checkbox" />
-                                    <span class="slider round"></span>
+                                    <span className="slider round"></span>
                                 </label>
 
                             </div>

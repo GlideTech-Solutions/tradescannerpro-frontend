@@ -3,20 +3,44 @@
 
 import clsx from "clsx";
 
-export default function StatsRow({ isDarkMode = false }) {
+// Helper functions for formatting
+const formatPrice = (price) => {
+  if (!price) return '-';
+  if (price < 0.01) {
+    return `$${price.toFixed(6)}`;
+  } else if (price < 1) {
+    return `$${price.toFixed(4)}`;
+  } else {
+    return `$${price.toFixed(2)}`;
+  }
+};
+
+const formatVolume = (volume) => {
+  if (!volume) return '-';
+  if (volume >= 1e9) {
+    return `$${(volume / 1e9).toFixed(2)}B`;
+  } else if (volume >= 1e6) {
+    return `$${(volume / 1e6).toFixed(2)}M`;
+  } else {
+    return `$${(volume / 1e3).toFixed(2)}K`;
+  }
+};
+
+export default function StatsRow({ isDarkMode = false, stats = null, coinData = null }) {
+
   const items = [
     {
-      key: "marketCap",
+      key: "market_cap",
       label: "Market Cap",
-      value: "$110.04B",
+      value: coinData?.market_cap ? formatPrice(coinData.market_cap) : "-",
       icon: isDarkMode
         ? "/assets/icons/gray-chart-histogram.svg"
         : "/assets/icons/chart-histogram.svg",
     },
     {
-      key: "volume",
+      key: "total_volume",
       label: "24h Volume",
-      value: "$7.66B",
+      value: coinData?.total_volume ? formatVolume(coinData.total_volume) : "-",
       icon: isDarkMode
         ? "/assets/icons/gray-chart-simple.svg"
         : "/assets/icons/chart-simple.svg",
@@ -24,33 +48,18 @@ export default function StatsRow({ isDarkMode = false }) {
     {
       key: "rsi",
       label: "RSI",
-      value: "52.61",
+      value: coinData?.rsi ?? "-",
       icon: isDarkMode
         ? "/assets/icons/gray-holding-hand-revenue.svg"
         : "/assets/icons/holding-hand-revenue.svg",
     },
     {
-      key: "signal",
-      label: "WinWave Signal",
-      // this one renders a BUY button instead of plain value
-      icon: isDarkMode
-        ? "/assets/icons/gray-arrow-comparison.svg"
-        : "/assets/icons/arrow-comparison.svg",
-      renderRight: () => (
-        <div className="right-side-price">
-          <div className="buy-now-alignment">
-            <button>Buy</button>
-          </div>
-        </div>
-      ),
-    },
-    {
       key: "score",
       label: "Score",
+      value: coinData?.score ? `${coinData.score}/100` : "-",
       icon: isDarkMode
         ? "/assets/icons/gray-ranking-podium-empty.svg"
         : "/assets/icons/ranking-podium-empty.svg",
-      value: "72/100",
     },
   ];
 
@@ -75,12 +84,8 @@ export default function StatsRow({ isDarkMode = false }) {
               </div>
             </div>
 
-            {/* Right side content (value or custom) */}
-            {it.renderRight ? (
-              it.renderRight()
-            ) : (
-              <h6 className={clsx(isDarkMode && "dark")}>{it.value}</h6>
-            )}
+            {/* Right side content */}
+            <h6 className={clsx(isDarkMode && "dark")}>{it.value}</h6>
           </div>
         ))}
       </div>
