@@ -15,9 +15,9 @@ export default function PageHeader() {
             await apiClient.logout();
         } catch (error) {
             console.error('Logout error:', error);
-            // Force redirect even if API call fails
-            window.location.href = '/login';
         }
+        // Always redirect to login after logout (even on error)
+        router.push('/login');
     };
 
     const handleScan = async () => {

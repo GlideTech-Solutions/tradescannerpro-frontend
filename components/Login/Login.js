@@ -63,7 +63,6 @@ const router = useRouter();
     
     try {
       const data = await apiClient.login(email, password);
-      
       // Success: redirect to explosive-move-detection
       if (data.data?.access_token) {
         toast.success("Login successful!");
@@ -73,20 +72,18 @@ const router = useRouter();
       }
     } catch (err) {
       let errorMsg = "Login failed.";
-      
-      if (err.message.includes("INVALID_CREDENTIALS")) {
+      if (err.message?.includes("INVALID_CREDENTIALS") || err.status === 401) {
         errorMsg = "Invalid email or password.";
-      } else if (err.message.includes("INSUFFICIENT_PERMISSIONS")) {
+      } else if (err.message?.includes("INSUFFICIENT_PERMISSIONS")) {
         errorMsg = "You do not have access to this service.";
-      } else if (err.message.includes("Network error")) {
+      } else if (err.message?.includes("Network error")) {
         errorMsg = "Network error. Please try again.";
       } else {
         errorMsg = err.message || "Login failed.";
       }
-      
       toast.error(errorMsg);
+      // Do NOT reload or redirect on error
     }
-    
     setLoading(false);
   };
 
