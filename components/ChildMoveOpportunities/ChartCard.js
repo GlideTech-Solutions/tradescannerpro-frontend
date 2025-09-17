@@ -149,7 +149,7 @@ export default function ChartCard({ coinData, coinHistory }) {
           <div className={`prices ${isDarkMode ? 'dark' : 'light'}`}>
             {formatPrice(currentPrice)}
           </div>
-          <div className="volume-info" style={{ marginTop: '5px' }}>
+          {/* <div className="volume-info" style={{ marginTop: '5px' }}>
             <div className={`volume-text ${isDarkMode ? 'dark' : 'light'}`} style={{
               fontSize: '14px',
               color: isDarkMode ? '#8BB9FF' : '#12C59F',
@@ -157,23 +157,48 @@ export default function ChartCard({ coinData, coinHistory }) {
             }}>
               {totalVolume ? `${formatVolume(totalVolume)} (1d)` : '-'}
             </div>
-          </div>
+          </div> */}
           
         </div>
       </div>
 
       {/* Toolbar */}
+
       <div className="toolbars">
         <div className="pills">
-          <span className="pill">
-            <span className="swatch50" /> MA50: <b>406.98</b>
-          </span>
-          <span className="pill">
-            <span className="swatch200" /> MA200: <b>400.25</b>
-          </span>
+          {(() => {
+            // Get the latest data point (from coinHistory or fallback to raw)
+            const latest = data[data.length - 1] || {};
+            // If coinHistory.data exists, try to get the original API object for more fields
+            let latestRaw = null;
+            if (coinHistory?.data && Array.isArray(coinHistory.data) && coinHistory.data.length > 0) {
+              latestRaw = coinHistory.data[coinHistory.data.length - 1];
+            }
+            // Use latestRaw for original fields if available, else fallback to transformed data
+            const close = latestRaw?.close ?? latest.price;
+            const high = latestRaw?.high ?? latest.high;
+            const low = latestRaw?.low ?? latest.low;
+            const open = latestRaw?.open ?? latest.open;
+            return (
+              <>
+                <span className="pill">
+                  <span className="swatch50" /> Close: <b>{close !== undefined ? close.toFixed(2) : '-'}</b>
+                </span>
+                <span className="pill">
+                  <span className="swatch200" /> High: <b>{high !== undefined ? high.toFixed(2) : '-'}</b>
+                </span>
+                <span className="pill">
+                  <span className="swatch200" /> Low: <b>{low !== undefined ? low.toFixed(2) : '-'}</b>
+                </span>
+                <span className="pill">
+                  <span className="swatch200" /> Open: <b>{open !== undefined ? open.toFixed(2) : '-'}</b>
+                </span>
+              </>
+            );
+          })()}
         </div>
 
-        <div className="tabs">
+        {/* <div className="tabs">
           {timeframes.map((t) => (
             <button
               key={t}
@@ -183,7 +208,7 @@ export default function ChartCard({ coinData, coinHistory }) {
               {t}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* Chart */}

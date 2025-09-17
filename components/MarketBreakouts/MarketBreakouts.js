@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PageLogo from '../PageLogo/PageLogo'
 import "./MarketBreakouts.scss";
 import { useTheme } from '../../context/ThemeContext';
@@ -27,6 +27,11 @@ export default function MarketBreakouts() {
             console.error("Scan error:", err);
         }
     };
+
+    useEffect(() => {
+        handleScan();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className='market-breakout-detection-section'>

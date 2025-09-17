@@ -11,6 +11,10 @@ export default function MoveOpportunities() {
     const { scanResult, lastScanTime } = useScan();
     const router = useRouter();
 
+ 
+
+   
+
     // Redirect to market-breakouts if no scan data available
     React.useEffect(() => {
         if (!scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0) {
@@ -58,8 +62,8 @@ export default function MoveOpportunities() {
   }
 
   const getPercentageIcon = (percentage) => {
-    if (percentage > 0) return <img src='/assets/icons/arrow-green.svg' alt='arrow-icon' />
-    if (percentage < 0) return <img src='/assets/icons/arrow-red.svg' alt='arrow-icon' />
+    if (percentage > 0) return <img className='arrow-icon' src='/assets/icons/arrow-green.svg' alt='arrow-icon' />
+    if (percentage < 0) return <img className='arrow-icon' src='/assets/icons/arrow-red.svg' alt='arrow-icon' />
     return null
   }
     return (
@@ -89,10 +93,10 @@ export default function MoveOpportunities() {
                                                             </div>
                                                             <div className='moveOpportunoties-right-side-alignment'>
                                                                 <h3 className={`${isDarkMode ? 'dark' : ''}`}>{formatPrice(coin.current_price)}</h3>
-                                                                <div className='rate-alignemnt'>
+                                                                {/* <div className='rate-alignemnt'>
                                                                     <img src='/assets/icons/up-arrow.svg' alt='up arrow' />
                                                                     <p className={`${isDarkMode ? 'dark' : ''}`}>{formatVolume(coin.total_volume)}(1d)</p>
-                                                                </div>
+                                                                </div> */}
                                                             </div>
                                                         </div>
                                                         <div className='moveOpportunities-child-list-alignment'>
@@ -194,8 +198,7 @@ export default function MoveOpportunities() {
                                     <div className={`moveOpportunities-grid-item ${isDarkMode ? 'dark' : ''}`}>
                                         <span className={`${isDarkMode ? 'dark' : ''}`}>1h</span>
                                         <div className='rating-alignment'>
-                                            
-                                            <h6>
+                                            <h6 style={{ color: coin.price_change_percentage_1h < 0 ? 'red' : undefined }}>
                                                 {getPercentageIcon(coin.price_change_percentage_1h)}
                                                 {coin.price_change_percentage_1h?.toFixed(2)}%
                                             </h6>
@@ -205,8 +208,7 @@ export default function MoveOpportunities() {
                                     <div className={`moveOpportunities-grid-item ${isDarkMode ? 'dark' : ''}`}>
                                         <span className={`${isDarkMode ? 'dark' : ''}`}>24h</span>
                                         <div className='rating-alignment'>
-                                           
-                                            <h6>
+                                            <h6 style={{ color: coin.price_change_percentage_24h < 0 ? 'red' : undefined }}>
                                                 {getPercentageIcon(coin.price_change_percentage_24h)}
                                                 {coin.price_change_percentage_24h?.toFixed(2)}%
                                             </h6>
@@ -216,8 +218,7 @@ export default function MoveOpportunities() {
                                     <div className={`moveOpportunities-grid-item ${isDarkMode ? 'dark' : ''}`}>
                                         <span className={`${isDarkMode ? 'dark' : ''}`}>7D</span>
                                         <div className='rating-alignment'>
-                                          
-                                            <h6>
+                                            <h6 style={{ color: coin.price_change_percentage_7d < 0 ? 'red' : undefined }}>
                                                 {getPercentageIcon(coin.price_change_percentage_7d)}
                                                 {coin.price_change_percentage_7d?.toFixed(2)}%
                                             </h6>

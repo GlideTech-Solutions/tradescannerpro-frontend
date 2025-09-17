@@ -1,5 +1,7 @@
 @import "../../app/globals.scss";
-
+.arrow-icon{
+    padding-right: 5px;
+}
 .moveOpportunities-section {
     .moveOpportunities-welcome-line {
         max-width: 570px;
@@ -319,6 +321,17 @@
                             color: #8085FF;
                             background: #8085FF26;
 
+                        }
+
+                        &:hover {
+                            cursor: pointer;
+                            background: #fff;
+                            color: #000;
+
+                            &.dark {
+                                background: #8085FF80;
+                                color: #001D34;
+                            }
                         }
 
                         img {
