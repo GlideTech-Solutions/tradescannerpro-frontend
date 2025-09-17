@@ -29,7 +29,7 @@ export default function MarketBreakouts() {
     };
 
     useEffect(() => {
-        handleScan();
+        // handleScan();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
