@@ -25,7 +25,7 @@ export default function MarketBreakouts() {
             // Handle 401 errors (session expired) - API client will handle redirect and toast
             if (err.message?.includes('Session expired')) {
                 // Don't show error state for session expiration as user will be redirected
-                console.log('Session expired, redirecting to login...');
+              
                 return;
             }
             

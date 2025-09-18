@@ -14,7 +14,7 @@ export default function NavigationProvider({ children }) {
   useEffect(() => {
     // Create bound navigation functions
     const navigate = (path) => {
-      console.log('NavigationProvider: Navigating to', path);
+     
       router.push(path);
     };
     
@@ -22,29 +22,29 @@ export default function NavigationProvider({ children }) {
     apiClient.setNavigate(navigate);
     apiService.setNavigate(navigate);
     
-    console.log('NavigationProvider: Navigation functions set up');
+   
     
     // Test the navigation setup
     if (typeof window !== 'undefined') {
       window.testNavigation = () => {
-        console.log('Testing navigation setup...');
-        console.log('ApiClient:', apiClient);
-        console.log('ApiClient navigate function:', typeof apiClient.navigate);
-        console.log('ApiClient setNavigate function:', typeof apiClient.setNavigate);
-        console.log('ApiService:', apiService);
-        console.log('ApiService navigate function:', typeof apiService.navigate);
-        console.log('ApiService setNavigate function:', typeof apiService.setNavigate);
+       
+       
+       
+       
+       
+       
+       
         
         if (apiClient.navigate && typeof apiClient.setNavigate === 'function') {
-          console.log('✅ ApiClient navigation is set up correctly');
+         
         } else {
-          console.log('❌ ApiClient navigation is NOT set up properly');
+         
         }
-        
+
         if (apiService.navigate && typeof apiService.setNavigate === 'function') {
-          console.log('✅ ApiService navigation is set up correctly');
+         
         } else {
-          console.log('❌ ApiService navigation is NOT set up properly');
+         
         }
       };
     }
@@ -53,7 +53,7 @@ export default function NavigationProvider({ children }) {
     return () => {
       apiClient.setNavigate(null);
       apiService.setNavigate(null);
-      console.log('NavigationProvider: Navigation functions cleaned up');
+     
     };
   }, [router]);
 
