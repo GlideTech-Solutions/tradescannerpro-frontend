@@ -71,8 +71,10 @@ const router = useRouter();
         toast.error("Login failed: No token received.");
       }
     } catch (err) {
+    
       let errorMsg = "Login failed.";
       if (err.message?.includes("INVALID_CREDENTIALS") || err.status === 401) {
+
         errorMsg = "Invalid email or password.";
       } else if (err.message?.includes("INSUFFICIENT_PERMISSIONS")) {
         errorMsg = "You do not have access to this service.";

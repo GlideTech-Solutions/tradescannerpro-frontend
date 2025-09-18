@@ -4,7 +4,6 @@ import "./MarketBreakouts.scss";
 import { useTheme } from '../../context/ThemeContext';
 import { useScan } from '../../context/ScanContext';
 import { useRouter } from 'next/navigation';
-import ThemeVideo from '../ThemeVideo';
 import apiClient from '../../lib/api-client';
 
 export default function MarketBreakouts() {
@@ -23,13 +22,20 @@ export default function MarketBreakouts() {
             updateScanResult(data);
             router.push('/move-opportunities');
         } catch (err) {
+            // Handle 401 errors (session expired) - API client will handle redirect
+            if (err.message?.includes('Session expired')) {
+                // Don't show error state for session expiration as user will be redirected
+                console.log('Session expired, redirecting to login...');
+                return;
+            }
+            
             setErrorState(err.message || "Scan failed. Please try again.");
             console.error("Scan error:", err);
         }
     };
 
     useEffect(() => {
-        // handleScan();
+        handleScan();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

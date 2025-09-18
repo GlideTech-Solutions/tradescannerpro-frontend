@@ -36,6 +36,13 @@ export async function GET(request, { params }) {
     const data = await response.json();
 
     if (!response.ok) {
+      // If external API returns 401, it means token is invalid/expired
+      if (response.status === 401) {
+        return NextResponse.json(
+          { error: 'Session expired. Please log in again.' },
+          { status: 401 }
+        );
+      }
       return NextResponse.json(data, { status: response.status });
     }
 
