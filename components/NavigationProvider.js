@@ -28,17 +28,22 @@ export default function NavigationProvider({ children }) {
     if (typeof window !== 'undefined') {
       window.testNavigation = () => {
         console.log('Testing navigation setup...');
+        console.log('ApiClient:', apiClient);
         console.log('ApiClient navigate function:', typeof apiClient.navigate);
+        console.log('ApiClient setNavigate function:', typeof apiClient.setNavigate);
+        console.log('ApiService:', apiService);
         console.log('ApiService navigate function:', typeof apiService.navigate);
-        if (apiClient.navigate) {
+        console.log('ApiService setNavigate function:', typeof apiService.setNavigate);
+        
+        if (apiClient.navigate && typeof apiClient.setNavigate === 'function') {
           console.log('✅ ApiClient navigation is set up correctly');
         } else {
-          console.log('❌ ApiClient navigation is NOT set up');
+          console.log('❌ ApiClient navigation is NOT set up properly');
         }
-        if (apiService.navigate) {
+        if (apiService.navigate && typeof apiService.setNavigate === 'function') {
           console.log('✅ ApiService navigation is set up correctly');
         } else {
-          console.log('❌ ApiService navigation is NOT set up');
+          console.log('❌ ApiService navigation is NOT set up properly');
         }
       };
     }
