@@ -12,14 +12,42 @@ export default function NavigationProvider({ children }) {
   const router = useRouter();
 
   useEffect(() => {
+    // Create bound navigation functions
+    const navigate = (path) => {
+      console.log('NavigationProvider: Navigating to', path);
+      router.push(path);
+    };
+    
     // Set the navigation function for both API clients
-    apiClient.setNavigate(router.push);
-    apiService.setNavigate(router.push);
+    apiClient.setNavigate(navigate);
+    apiService.setNavigate(navigate);
+    
+    console.log('NavigationProvider: Navigation functions set up');
+    
+    // Test the navigation setup
+    if (typeof window !== 'undefined') {
+      window.testNavigation = () => {
+        console.log('Testing navigation setup...');
+        console.log('ApiClient navigate function:', typeof apiClient.navigate);
+        console.log('ApiService navigate function:', typeof apiService.navigate);
+        if (apiClient.navigate) {
+          console.log('✅ ApiClient navigation is set up correctly');
+        } else {
+          console.log('❌ ApiClient navigation is NOT set up');
+        }
+        if (apiService.navigate) {
+          console.log('✅ ApiService navigation is set up correctly');
+        } else {
+          console.log('❌ ApiService navigation is NOT set up');
+        }
+      };
+    }
     
     // Cleanup on unmount
     return () => {
       apiClient.setNavigate(null);
       apiService.setNavigate(null);
+      console.log('NavigationProvider: Navigation functions cleaned up');
     };
   }, [router]);
 

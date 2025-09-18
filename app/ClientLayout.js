@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import ErrorBoundary from '../components/ErrorBoundary';
 import NavigationProvider from '../components/NavigationProvider';
 import PropTypes from 'prop-types';
+import { Toaster } from 'react-hot-toast';
 
 export default function ClientLayout({ children, gotham }) {
   const pathname = usePathname();
@@ -46,6 +47,29 @@ export default function ClientLayout({ children, gotham }) {
               <ErrorBoundary>
                 {children}
               </ErrorBoundary>
+              <Toaster 
+                position="top-center"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: '#333',
+                    color: '#fff',
+                  },
+                  error: {
+                    duration: 5000,
+                    style: {
+                      background: '#dc3545',
+                      color: '#fff',
+                    },
+                  },
+                  success: {
+                    style: {
+                      background: '#28a745',
+                      color: '#fff',
+                    },
+                  },
+                }}
+              />
             </div>
           </NavigationProvider>
         </ScanProvider>

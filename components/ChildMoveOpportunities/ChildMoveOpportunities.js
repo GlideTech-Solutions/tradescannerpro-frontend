@@ -80,15 +80,14 @@ export default function ChildMoveOpportunities() {
         apiClient.getCoinHistory(coinId)
           .then(data => setCoinHistory(data))
           .catch(err => {
-            // Handle 401 errors (session expired) - API client will handle redirect
+            // Handle 401 errors (session expired) - API client will handle redirect and toast
             if (err.message?.includes('Session expired')) {
               // Don't show error state for session expiration as user will be redirected
               console.log('Session expired, redirecting to login...');
               return;
             }
             
-            // API client already handles other network errors
-            // Just show the error message for user feedback
+            // API client already shows toast, just set local error state for UI
             setError(err.message || 'Failed to fetch coin history');
           })
         .finally(() => setLoading(false));

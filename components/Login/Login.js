@@ -4,7 +4,7 @@ import "./login.scss";
 import PageLogo from "../PageLogo/PageLogo";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import apiClient from "../../lib/api-client";
 export default function Login() {
   const { isDarkMode } = useTheme();
@@ -91,8 +91,6 @@ const router = useRouter();
   };
 
   return (
-    <>
-      <Toaster position="top-center" />
       <div className="login-page">
         <div className="login-box">
             <PageLogo />
@@ -154,6 +152,5 @@ const router = useRouter();
           <img src="/assets/images/login-icon.png" alt="login img" />
         </div>
       </div>
-    </>
   );
 }

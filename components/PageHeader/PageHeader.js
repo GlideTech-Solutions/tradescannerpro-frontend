@@ -29,13 +29,14 @@ export default function PageHeader() {
             updateScanResult(data);
             router.push('/move-opportunities');
         } catch (err) {
-            // Handle 401 errors (session expired) - API client will handle redirect
+            // Handle 401 errors (session expired) - API client will handle redirect and toast
             if (err.message?.includes('Session expired')) {
                 // Don't show error state for session expiration as user will be redirected
                 console.log('Session expired, redirecting to login...');
                 return;
             }
             
+            // API client already shows toast, just set local error state for UI
             setErrorState(err.message || "Scan failed. Please try again.");
             console.error("Scan error:", err);
         }
