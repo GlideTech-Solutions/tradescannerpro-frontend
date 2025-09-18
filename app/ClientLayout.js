@@ -47,7 +47,7 @@ export default function ClientLayout({ children, gotham }) {
               <ErrorBoundary>
                 {children}
               </ErrorBoundary>
-              {/* <Toaster 
+              <Toaster 
                 position="top-center"
                 toastOptions={{
                   duration: 4000,
@@ -69,7 +69,7 @@ export default function ClientLayout({ children, gotham }) {
                     },
                   },
                 }}
-              /> */}
+              />
             </div>
           </NavigationProvider>
         </ScanProvider>
