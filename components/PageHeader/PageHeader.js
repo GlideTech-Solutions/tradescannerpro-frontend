@@ -1,3 +1,4 @@
+
 import React from 'react'
 import "./PageHeader.scss";
 import { useTheme } from '../../context/ThemeContext';
@@ -7,7 +8,7 @@ import apiClient from '@/lib/api-client';
 
 export default function PageHeader() {
     const { isDarkMode } = useTheme();
-    const { setErrorState, setLoadingState, updateScanResult } = useScan();
+    const { setErrorState } = useScan();
     const router = useRouter();
 
     const handleLogout = async () => {
@@ -20,26 +21,11 @@ export default function PageHeader() {
         router.push('/login');
     };
 
-    const handleScan = async () => {
+    const handleScan = () => {
+        // Clear any previous errors before navigating
         setErrorState(null);
-        setLoadingState(true);
-        try {
-            const data = await apiClient.scanCrypto();
-            // Update scan result in context (which also saves to localStorage)
-            updateScanResult(data);
-            router.push('/move-opportunities');
-        } catch (err) {
-            // Handle 401 errors (session expired) - API client will handle redirect and toast
-            if (err.message?.includes('Session expired')) {
-                // Don't show error state for session expiration as user will be redirected
-             
-                return;
-            }
-            
-            // API client already shows toast, just set local error state for UI
-            setErrorState(err.message || "Scan failed. Please try again.");
-            console.error("Scan error:", err);
-        }
+        // Redirect to market-breakouts page with scan trigger parameter
+        router.push('/market-breakouts?autoScan=true');
     };
 
     return (

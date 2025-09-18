@@ -16,15 +16,15 @@ export default function ClientLayout({ children, gotham }) {
   let videoHeight = '100vh';
   let top = '0';
   if (pathname?.startsWith('/market-breakouts')) {
-    darkSrc = '/assets/video/marketBreakout.mp4';
+    darkSrc = '/assets/video/coinpulse-gradient-with-loader-dark.mp4';
     lightSrc = '/assets/video/light_marketBreakout.mp4';
-    videoHeight = '600px';
+    videoHeight = 'calc(100vh - -280px)'; // account for header height
     top = // bottom align
-      'calc(100vh - 600px)';
+      '0';
   }
 
   return (
-    <body className={gotham} style={{position: 'relative', minHeight: '100vh', overflow: ''}}>
+    <>
       <ThemeProvider>
         <ScanProvider>
           <NavigationProvider>
@@ -74,7 +74,7 @@ export default function ClientLayout({ children, gotham }) {
           </NavigationProvider>
         </ScanProvider>
       </ThemeProvider>
-    </body>
+    </>
   );
 }
 

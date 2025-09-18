@@ -3,7 +3,6 @@ import PageLogo from '../PageLogo/PageLogo'
 import "./ExplosiveMoveDetection.scss";
 import { useTheme } from '../../context/ThemeContext';
 import { useRouter } from "next/navigation";
-import ThemeVideo from '../ThemeVideo';
 
 export default function ExplosiveMoveDetection() {
     const { isDarkMode } = useTheme();
@@ -29,7 +28,7 @@ export default function ExplosiveMoveDetection() {
                     <div className='run-button-alignment'>
                         <button
                         onClick={() => {
-                            router.push('/market-breakouts');
+                            router.push('/market-breakouts?autoScan=true');
                         }}
                         > <img src='/assets/icons/bit-icon.svg' alt='bit icon' />  Run Scan</button>
                     </div>

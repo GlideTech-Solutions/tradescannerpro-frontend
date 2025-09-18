@@ -1,17 +1,20 @@
-import React, { useEffect } from 'react'
+
+import React, { useEffect, useRef, useCallback } from 'react'
 import PageLogo from '../PageLogo/PageLogo'
 import "./MarketBreakouts.scss";
 import { useTheme } from '../../context/ThemeContext';
 import { useScan } from '../../context/ScanContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import apiClient from '../../lib/api-client';
 
 export default function MarketBreakouts() {
     const { isDarkMode } = useTheme();
     const { updateScanResult, setLoadingState, setErrorState, isLoading, error } = useScan();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const hasAutoScanned = useRef(false);
 
-    const handleScan = async () => {
+    const handleScan = useCallback(async () => {
         setErrorState(null);
         setLoadingState(true);
         
@@ -33,12 +36,21 @@ export default function MarketBreakouts() {
             setErrorState(err.message || "Scan failed. Please try again.");
             console.error("Scan error:", err);
         }
-    };
+    }, [setErrorState, setLoadingState, updateScanResult, router]);
 
     useEffect(() => {
-        handleScan();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        // Only auto-scan once if coming from the header "Run Scan" button
+        const shouldAutoScan = searchParams.get('autoScan') === 'true';
+        if (shouldAutoScan && !hasAutoScanned.current) {
+            hasAutoScanned.current = true;
+            handleScan();
+            
+            // Clean up the URL parameter to prevent re-execution
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('autoScan');
+            window.history.replaceState({}, '', newUrl.pathname);
+        }
+    }, [searchParams, handleScan]);
 
     return (
         <div className='market-breakout-detection-section'>
