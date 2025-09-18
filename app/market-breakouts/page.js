@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import MarketBreakouts from "../../components/MarketBreakouts/MarketBreakouts";
 import ThemeToggleBtn from "../../components/ThemeToggleBtn";
 
@@ -9,7 +10,9 @@ export default function Home() {
       <div className="content">
         <ThemeToggleBtn />
 
-        <MarketBreakouts />
+        <Suspense fallback={<div>Loading...</div>}>
+          <MarketBreakouts />
+        </Suspense>
       </div>
     </main>
   );
