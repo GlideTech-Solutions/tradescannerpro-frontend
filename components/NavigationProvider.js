@@ -40,6 +40,7 @@ export default function NavigationProvider({ children }) {
         } else {
           console.log('❌ ApiClient navigation is NOT set up properly');
         }
+        
         if (apiService.navigate && typeof apiService.setNavigate === 'function') {
           console.log('✅ ApiService navigation is set up correctly');
         } else {
