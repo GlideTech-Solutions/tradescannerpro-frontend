@@ -1,12 +1,16 @@
 @import "../../app/globals.scss";
 
 .login-page {
-  display: grid;
-  position: relative;
+  // display: grid;
+  // position: relative;
+  // height: 100vh;
+  // grid-template-columns: 100% 1fr;
+  // grid-gap: 20px;
+  // gap: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100vh;
-  grid-template-columns: 45% 1fr;
-  grid-gap: 20px;
-  gap: 20px;
   padding: 40px 40px 0 40px;
   align-items: center;
   @media (max-width: "767px") {
@@ -14,6 +18,7 @@
     display: block;
   }
   .login-box {
+    width: 40%;
     text-align: start;
     backdrop-filter: blur(20px);
     background: rgba(71, 64, 112, 0.4);
@@ -31,32 +36,30 @@
       padding: 20px 0;
     }
   }
-  .login-info{
+  .login-info {
     position: absolute;
     bottom: 0;
     right: 20px;
-    img{
-            width: 100%;
-    height: 900px;
-    display: block;
-    object-fit: cover;
-    @media (max-width: 1024px) {
-      height: 600px;
+    img {
+      width: 100%;
+      height: 900px;
+      display: block;
+      object-fit: cover;
+      @media (max-width: 1024px) {
+        height: 600px;
+      }
+      @media (max-width: 767px) {
+        height: 400px;
+      }
+      @media (max-width: 480px) {
+        height: 300px;
+      }
     }
     @media (max-width: 767px) {
-      height: 400px;
+      position: unset;
     }
-    @media (max-width: 480px) {
-      height: 300px;
-    }
-
   }
-    @media (max-width: 767px) {
-    position: unset;
-  }
-
-  }
-  h1{
+  h1 {
     font-weight: 600;
     font-size: clamp(32px, 4vw, 40px);
     line-height: 1.2;
