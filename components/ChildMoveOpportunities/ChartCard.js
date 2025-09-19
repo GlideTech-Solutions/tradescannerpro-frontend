@@ -39,7 +39,9 @@ const timeframes = ["1H", "1D", "M", "3M", "6M", "Y"];
 
 // Helper functions for formatting
 const formatPrice = (price) => {
-  if (price < 0.01) {
+  if (!price || price === 0) {
+    return `$${price.toFixed(5)}`;
+  } else if (price < 0.01) {
     return `$${price.toFixed(6)}`;
   } else if (price < 1) {
     return `$${price.toFixed(4)}`;
@@ -182,16 +184,16 @@ export default function ChartCard({ coinData, coinHistory }) {
             return (
               <>
                 <span className="pill">
-                  <span className="swatch50" /> Close: <b>{close !== undefined ? close.toFixed(2) : '-'}</b>
+                  <span className="swatch50" /> Close: <b>{close !== undefined ? formatPrice(close) : '-'}</b>
                 </span>
                 <span className="pill">
-                  <span className="swatch200" /> High: <b>{high !== undefined ? high.toFixed(2) : '-'}</b>
+                  <span className="swatch200" /> High: <b>{high !== undefined ? formatPrice(high) : '-'}</b>
                 </span>
                 <span className="pill">
-                  <span className="swatch200" /> Low: <b>{low !== undefined ? low.toFixed(2) : '-'}</b>
+                  <span className="swatch200" /> Low: <b>{low !== undefined ? formatPrice(low) : '-'}</b>
                 </span>
                 <span className="pill">
-                  <span className="swatch200" /> Open: <b>{open !== undefined ? open.toFixed(2) : '-'}</b>
+                  <span className="swatch200" /> Open: <b>{open !== undefined ? formatPrice(open) : '-'}</b>
                 </span>
               </>
             );
@@ -274,7 +276,11 @@ export default function ChartCard({ coinData, coinHistory }) {
                 fontSize: "13px"
               }}
               formatter={(value, name) => {
-                if (name === "volume" || name === "volumeUp" || name === "volumeDown") {
+                if (name === "volumeUp") {
+                  return [`${value.toFixed(2)}M`, "Volume"];
+                } else if (name === "volumeDown") {
+                  return null; // Don't show separate entry for volumeDown to avoid duplication
+                } else if (name === "volume") {
                   return [`${value.toFixed(2)}M`, "Volume"];
                 }
                 return [formatPrice(value), "Price"];

@@ -36,7 +36,10 @@ export default function MoveOpportunities() {
     }
 
     const formatPrice = (price) => {
-    if (price < 0.01) {
+    if (!price && price !== 0) return '-'
+    if (price === 0) {
+      return `$${price.toFixed(5)}`
+    } else if (price < 0.01) {
       return `$${price.toFixed(6)}`
     } else if (price < 1) {
       return `$${price.toFixed(4)}`
