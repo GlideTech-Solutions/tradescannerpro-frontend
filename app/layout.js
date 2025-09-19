@@ -24,6 +24,7 @@ const gotham = localFont({
     return (
       <html lang="en">
         <head>
+          
           <title>TradeScannerPro - Crypto Scanner for Explosive Move Detection</title>
           <link rel="icon" href="/logo.svg" type="image/svg+xml" />
           <link rel="alternate icon" href="/favicon.ico" />
