@@ -1,8 +1,12 @@
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import { useTheme } from '../context/ThemeContext';
 
 const ThemeToggleBtn = () => {
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { isDarkMode, toggleTheme, isInitialized } = useTheme();
+
+  // Don't render until theme is initialized to prevent flickering
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     // <div>

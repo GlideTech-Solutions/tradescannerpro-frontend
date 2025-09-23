@@ -1,13 +1,14 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useTheme } from '../context/ThemeContext';
 
 export default function ThemeVideo({ darkSrc, lightSrc, className = '', style = {}, ...props }) {
-    const { isDarkMode } = useTheme();
+    const { isDarkMode, isInitialized } = useTheme();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => setMounted(true), []);
-    if (!mounted) return null;
+    if (!mounted || !isInitialized) return null;
 
     // Default styles for full background video
     const defaultStyle = {
@@ -37,3 +38,10 @@ export default function ThemeVideo({ darkSrc, lightSrc, className = '', style = 
         </video>
     );
 }
+
+ThemeVideo.propTypes = {
+    darkSrc: PropTypes.string.isRequired,
+    lightSrc: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    style: PropTypes.object,
+};

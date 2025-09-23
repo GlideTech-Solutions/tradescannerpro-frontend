@@ -8,8 +8,8 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import { useMemo, useState } from "react";
-import clsx from "clsx";
+import { useMemo } from "react";
+import PropTypes from "prop-types";
 import StatsRow from "./StatsRow";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -63,7 +63,6 @@ const formatVolume = (volume) => {
 
 export default function ChartCard({ coinData, coinHistory }) {
   const { isDarkMode } = useTheme();
-  const [tf, setTF] = useState("M");
 
   // Transform the API data to chart format
   const data = useMemo(() => {
@@ -71,33 +70,25 @@ export default function ChartCard({ coinData, coinHistory }) {
       return raw; // fallback to static data
     }
     
-    return coinHistory.data.map((item, index, array) => {
-      const prevItem = array[index - 1];
-      const priceUp = !prevItem || item.close >= prevItem.close;
-      
+    return coinHistory.data.map((item) => {
       return {
         date: new Date(item.time).toISOString().split('T')[0],
         price: item.close,
         volume: item.volume / 1e6, // Convert to millions for display
-        volumeUp: priceUp ? item.volume / 1e6 : 0, // Green volume
-        volumeDown: !priceUp ? item.volume / 1e6 : 0, // Red volume
+        volumeArea: item.volume / 1e6, // Same data for area chart
+        originalVolume: item.volume, // Keep original volume for tooltip
         open: item.open,
         high: item.high,
-        low: item.low
+        low: item.low,
+        time: item.time // Keep original time for tooltip
       };
     });
   }, [coinHistory]);
-
-  const lastClose = data[data.length - 1]?.price ?? 0;
-  const firstPrice = data[0]?.price ?? lastClose;
-  const changePct = firstPrice !== 0 ? +(((lastClose - firstPrice) / firstPrice) * 100).toFixed(2) : 0;
 
   // Extract coin info from coinData or use defaults
   const coinSymbol = coinData?.symbol?.toUpperCase() || 'COIN';
   const coinName = coinData?.name || 'Cryptocurrency';
   const coinImage = coinData?.image;
-  const currentPrice = coinData?.current_price || lastClose;
-  const totalVolume = coinData?.total_volume;
 
   // Calculate additional statistics
   const stats = useMemo(() => {
@@ -149,7 +140,7 @@ export default function ChartCard({ coinData, coinHistory }) {
 
         <div className="priceBlocks">
           <div className={`prices ${isDarkMode ? 'dark' : 'light'}`}>
-            {formatPrice(currentPrice)}
+            Volume Analysis
           </div>
           {/* <div className="volume-info" style={{ marginTop: '5px' }}>
             <div className={`volume-text ${isDarkMode ? 'dark' : 'light'}`} style={{
@@ -255,8 +246,8 @@ export default function ChartCard({ coinData, coinHistory }) {
               axisLine={false}
               tickLine={false}
               width={70}
-              tickFormatter={(v) => formatPrice(v)}
-              domain={["dataMin * 0.95", "dataMax * 1.05"]}
+              tickFormatter={(v) => `${v.toFixed(1)}M`}
+              domain={[0, "dataMax * 1.1"]}
             />
             <YAxis yAxisId="vol" hide domain={[0, "dataMax * 2"]} />
 
@@ -275,50 +266,58 @@ export default function ChartCard({ coinData, coinHistory }) {
                 boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                 fontSize: "13px"
               }}
-              formatter={(value, name) => {
-                if (name === "volumeUp") {
-                  return [`${value.toFixed(2)}M`, "Volume"];
-                } else if (name === "volumeDown") {
-                  return null; // Don't show separate entry for volumeDown to avoid duplication
-                } else if (name === "volume") {
-                  return [`${value.toFixed(2)}M`, "Volume"];
+              formatter={(value, name, props) => {
+                if (name === "volume" && props?.payload?.originalVolume) {
+                  // Show original volume value (not converted to millions)
+                  const originalVolume = props.payload.originalVolume;
+                  return [`${originalVolume.toFixed(2)}`, "Volume"];
                 }
-                return [formatPrice(value), "Price"];
+                // Hide area chart volume to avoid duplication
+                if (name === "volumeArea") {
+                  return null;
+                }
+                return null;
               }}
-              labelFormatter={(label) => {
+              labelFormatter={(label, payload) => {
+                // Use the original time from the data if available
+                if (payload?.[0]?.payload?.time) {
+                  const d = new Date(payload[0].payload.time);
+                  return d.toLocaleDateString('en-US', {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true
+                  });
+                }
+                // Fallback to label date
                 const d = new Date(label);
                 return d.toLocaleDateString('en-US', {
                   month: "short",
                   day: "numeric",
-                  year: "numeric"
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true
                 });
               }}
             />
 
-            {/* Volume bars - Green (up) */}
+            {/* Volume bars - Single color */}
             <Bar
               yAxisId="vol"
-              dataKey="volumeUp"
+              dataKey="volume"
               barSize={3}
               radius={[1, 1, 0, 0]}
               fill="#4CAF50"
               opacity={0.8}
             />
-            
-            {/* Volume bars - Red (down) */}
-            <Bar
-              yAxisId="vol"
-              dataKey="volumeDown"
-              barSize={3}
-              radius={[1, 1, 0, 0]}
-              fill="#f44336"
-              opacity={0.8}
-            />
 
-            {/* Price area line */}
+            {/* Volume area line */}
             <Area
               type="monotone"
-              dataKey="price"
+              dataKey="volumeArea"
               stroke="#4CAF50"
               strokeWidth={2}
               fill="url(#areaFill)"
@@ -341,3 +340,8 @@ export default function ChartCard({ coinData, coinHistory }) {
     </div>
   );
 }
+
+ChartCard.propTypes = {
+  coinData: PropTypes.object,
+  coinHistory: PropTypes.object,
+};

@@ -100,9 +100,11 @@ export default function Login() {
 
     try {
       const data = await apiClient.login(email, password);
+
       // Success: redirect to explosive-move-detection
       if (data.data?.access_token) {
         toast.success("Login successful!");
+        localStorage.setItem("user", JSON.stringify(data.data.user));
         router.push("/explosive-move-detection");
       } else {
         toast.error("Login failed: No token received.");

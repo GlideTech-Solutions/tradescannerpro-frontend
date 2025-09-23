@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import apiClient from "@/lib/api-client";
 
 export default function PageHeader() {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode, isInitialized } = useTheme();
   const { setErrorState } = useScan();
   const router = useRouter();
 
@@ -18,6 +18,7 @@ export default function PageHeader() {
 
   const handleLogout = async () => {
     try {
+      localStorage.clear();
       await apiClient.logout();
     } catch (error) {
       console.error("Logout error:", error);
@@ -32,6 +33,11 @@ export default function PageHeader() {
     // Redirect to market-breakouts page with scan trigger parameter
     router.push("/market-breakouts?autoScan=true");
   };
+
+  // Don't render until theme is initialized to prevent flickering
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     <div className="pageHeader-section">
