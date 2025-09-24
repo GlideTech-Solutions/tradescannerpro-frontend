@@ -8,24 +8,34 @@ import { formatScanTime } from '../../lib/timeUtils';
 
 export default function MoveOpportunities() {
     const { isDarkMode } = useTheme();
-    const { scanResult, lastScanTime } = useScan();
+    const { scanResult, lastScanTime, isLoading } = useScan();
     const router = useRouter();
+    const [isInitialLoad, setIsInitialLoad] = React.useState(true);
 
- 
-
-   
-
-    // Redirect to market-breakouts if no scan data available
+    // Set initial load to false after component mounts
     React.useEffect(() => {
-        if (!scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0) {
+        const timer = setTimeout(() => {
+            setIsInitialLoad(false);
+        }, 100); // Small delay to allow localStorage to load
+        
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Redirect to market-breakouts if no scan data available (but not during initial load)
+    React.useEffect(() => {
+        if (!isInitialLoad && !isLoading && (!scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0)) {
             router.push('/market-breakouts');
         }
-    }, [scanResult, router]);
+    }, [scanResult, router, isInitialLoad, isLoading]);
 
-    // Don't render anything if no scan data (will redirect)
-    if (!scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0) {
-        return null;
-    }
+    // Show loading state during initial load or if no scan data (will redirect)
+    // if (isInitialLoad || isLoading || !scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0) {
+    //     return (
+    //         <div className="loading-container">
+    //             <div>Loading...</div>
+    //         </div>
+    //     );
+    // }
 
 
     // Helper to format date
