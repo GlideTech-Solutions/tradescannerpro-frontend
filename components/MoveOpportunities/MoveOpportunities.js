@@ -49,12 +49,13 @@ export default function MoveOpportunities() {
   }
 
   const formatVolume = (volume) => {
+    if (!volume) return '-';
     if (volume >= 1e9) {
-      return `$${(volume / 1e9).toFixed(2)}B`
+      return `$${(volume / 1e9).toFixed(2)}B`;
     } else if (volume >= 1e6) {
-      return `$${(volume / 1e6).toFixed(2)}M`
+      return `$${(volume / 1e6).toFixed(2)}M`;
     } else {
-      return `$${(volume / 1e3).toFixed(2)}K`
+      return `$${(volume / 1e3).toFixed(2)}K`;
     }
   }
 
@@ -69,6 +70,26 @@ export default function MoveOpportunities() {
     if (percentage < 0) return <img className='arrow-icon' src='/assets/icons/arrow-red.svg' alt='arrow-icon' />
     return null
   }
+
+
+
+const formatMarketCap = (marketCap) => {
+    if (!marketCap && marketCap !== 0) return '-';
+    if (marketCap >= 1e9) {
+      return `$${(marketCap / 1e9).toFixed(2)}B`;
+    } else if (marketCap >= 1e6) {
+      return `$${(marketCap / 1e6).toFixed(2)}M`;
+    } else {
+      return `$${(marketCap / 1e3).toFixed(2)}K`;
+    }
+  };
+  
+  const formatRSI = (rsi) => {
+    if (!rsi && rsi !== 0) return '-';
+    return parseFloat(rsi).toFixed(2);
+  };
+  
+ 
     return (
         <div>
             <PageHeader />
@@ -118,7 +139,7 @@ export default function MoveOpportunities() {
                                                                     </div>
                                                                 </div>
                                                                 <div className='right-side-price'>
-                                                                    <h6 className={`${isDarkMode ? 'dark' : ''}`}>{coin.market_cap ? formatPrice(coin.market_cap) : '-'}</h6>
+                                                                    <h6 className={`${isDarkMode ? 'dark' : ''}`}>{formatMarketCap(coin.market_cap)}</h6>
                                                                 </div>
                                                             </div>
                                                             {/* 24h Volume */}
@@ -154,7 +175,7 @@ export default function MoveOpportunities() {
                                                                     </div>
                                                                 </div>
                                                                 <div className='right-side-price'>
-                                                                    <h6 className={`${isDarkMode ? 'dark' : ''}`}>{coin.rsi ?? '-'}</h6>
+                                                                    <h6 className={`${isDarkMode ? 'dark' : ''}`}>{formatRSI(coin.rsi)}</h6>
                                                                 </div>
                                                             </div>
                                                             {/* WinWave Signal */}
@@ -177,7 +198,7 @@ export default function MoveOpportunities() {
                                                                     </div>
                                                                 </div>
                                                             </div> */}
-                                                            {/* Score */}
+                                                            {/* Strength */}
                                                             <div className='moveOpportunities-child-details-alignment'>
                                                                 <div className='moveOpportunities-child-left-alignment'>
                                                                     <div className='moveOpportunities-icon'>
@@ -188,11 +209,11 @@ export default function MoveOpportunities() {
                                                                         )}
                                                                     </div>
                                                                     <div className='moveOpportunities-name'>
-                                                                        <span className={`${isDarkMode ? 'dark' : ''}`}>Score</span>
+                                                                        <span className={`${isDarkMode ? 'dark' : ''}`}>Strength</span>
                                                                     </div>
                                                                 </div>
                                                                 <div className='right-side-price'>
-                                                                    <h6 className={`${isDarkMode ? 'dark' : ''}`}>{coin.score ? `${coin.score}/100` : '-'}</h6>
+                                                                    <h6 className={`${isDarkMode ? 'dark' : ''}`}>{coin.strength || '-'}</h6>
                                                                 </div>
                                                             </div>
                                                         </div>

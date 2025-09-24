@@ -3,6 +3,20 @@ import { cookies } from 'next/headers';
 
 const API_BASE_URL = 'https://crypto-scanner-backend-production.up.railway.app/api';
 
+// Function to convert score to strength string
+function scoreToStrength(score) {
+  if (score === null || score === undefined) return 'Unknown';
+  
+  if (score >= 90) return 'Very Strong';
+  if (score >= 80) return 'Strong';
+  if (score >= 70) return 'Good';
+  if (score >= 60) return 'Moderate';
+  if (score >= 50) return 'Fair';
+  if (score >= 40) return 'Weak';
+  if (score >= 30) return 'Very Weak';
+  return 'Poor';
+}
+
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -35,6 +49,16 @@ export async function GET() {
         );
       }
       return NextResponse.json(data, { status: response.status });
+    }
+
+    // Transform score to strength for each coin
+    if (data && Array.isArray(data.data)) {
+      data.data = data.data.map(coin => ({
+        ...coin,
+        strength: scoreToStrength(coin.score),
+        // Keep original score for reference if needed
+        originalScore: coin.score
+      }));
     }
 
     return NextResponse.json(data);

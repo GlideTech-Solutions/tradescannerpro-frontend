@@ -73,9 +73,9 @@ export default function StatsRow({ isDarkMode = false, stats = null, coinData = 
         : "/assets/icons/holding-hand-revenue.svg",
     },
     {
-      key: "score",
-      label: "Score",
-      value: coinData?.score ? `${coinData.score}/100` : "-",
+      key: "strength",
+      label: "Strength",
+      value: coinData?.strength || "-",
       icon: isDarkMode
         ? "/assets/icons/gray-ranking-podium-empty.svg"
         : "/assets/icons/ranking-podium-empty.svg",
