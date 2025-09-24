@@ -54,17 +54,19 @@ body {
 body {
   margin: 0;
   padding: 0;
-
-    font-family: var(--font-gotham);
+  font-family: var(--font-dm-sans);
+    // font-family: var(--font-gotham);
 
 }
 
 button{
-    font-family: var(--font-gotham);
+  font-family: var(--font-dm-sans);
+    // font-family: var(--font-gotham);
   cursor: pointer;
 }
 input,textarea,select{
-    font-family: var(--font-gotham);
+  font-family: var(--font-dm-sans);
+    // font-family: var(--font-gotham);
 }
 * {
   box-sizing: border-box;

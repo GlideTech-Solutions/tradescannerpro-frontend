@@ -15,25 +15,26 @@
         .pageHeader-logo {
 
             @media (max-width : "767px") {
-                width: 120px;
+                width: 200px;
             }
         }
 
         .pageHeader-rightSide-alignment {
             display: flex;
             align-items: center;
-            gap: 50px;
+            gap: 20px;
 
             .menu-alignment {
-
-                @media (max-width : "767px") {
-                    display: none;
+                &.desktop-menu {
+                    @media (max-width : "1024px") {
+                        display: none;
+                    }
                 }
 
                 ul {
                     display: flex;
                     align-items: center;
-                    gap: 30px;
+                    gap: 25px;
                     list-style: none;
                     padding: 0;
                     margin: 0;
@@ -48,8 +49,34 @@
                         color: #001D34;
                         cursor: pointer;
 
+                        // Username styling (non-clickable)
+                        &:first-child {
+                            cursor: default;
+                            font-weight: 400;
+                            opacity: 0.8;
+                            font-size: 14px;
+                        }
+
+                        .username-display {
+                            font-size: 14px;
+                            font-weight: 400;
+                            opacity: 0.8;
+                            margin-left: 8px;
+                        }
+
                         &.dark {
                             color: #fff;
+
+                            .username-display {
+                                color: #fff;
+                                opacity: 0.7;
+                            }
+                        }
+
+                        // Dark mode username styling
+                        &.dark:first-child {
+                            color: #fff;
+                            opacity: 0.7;
                         }
 
                     }
@@ -64,26 +91,199 @@
                 button {
                     background: linear-gradient(21deg, #427DFF 8.39%, #7023FF 20.31%, #174DBA 50.95%, #8A6EFF 69.67%, #52B4FF 88.4%, #8A6EFF 93.51%);
                     border-radius: 50px;
-                    padding: 16px 56px;
                     border: none;
-                    
                     font-weight: 600;
-                    font-size: 16px;
-                    line-height: 100%;
-                    letter-spacing: -2%;
                     text-align: center;
                     color: #fff;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     gap: 10px;
+                    cursor: pointer;
+                    transition: transform 0.2s ease;
 
-
-                    @media (max-width : "767px") {
-                    padding: 8px 16px;
+                    &:hover {
+                        transform: scale(1.05);
                     }
 
+                    img {
+                        filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+                    }
                 }
+
+                // Desktop Scan Button
+                &.desktop-scan-button {
+                    display: flex;
+
+                    @media (max-width : "1024px") {
+                        display: none;
+                    }
+
+                    button {
+                        padding: 16px 56px;
+                        font-size: 16px;
+                        line-height: 100%;
+                        letter-spacing: -2%;
+
+                        img {
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                }
+
+                // Mobile Scan Button
+                &.mobile-scan-button {
+                    display: none;
+
+                    @media (max-width : "1024px") {
+                        display: flex;
+                    }
+
+                    button {
+                        padding: 12px;
+                        border-radius: 50%;
+                        width: 48px;
+                        height: 48px;
+
+                        img {
+                            width: 24px;
+                            height: 24px;
+                        }
+                    }
+                }
+            }
+
+            // Mobile Menu Button
+            .mobile-menu-button {
+                display: none;
+                
+                @media (max-width : "1024px") {
+                    display: block;
+                    cursor: pointer;
+                    z-index: 1001;
+                    padding: 8px;
+                    border-radius: 4px;
+                    transition: background-color 0.2s ease;
+
+                    &:hover {
+                        // background: rgba(0, 0, 0, 0.05);
+                    }
+
+                    &.dark:hover {
+                        // background: rgba(255, 255, 255, 0.1);
+                    }
+                }
+
+                .menu-icon {
+                    width: 24px;
+                    height: 24px;
+                    transition: transform 0.2s ease, filter 0.2s ease;
+
+                    // Light theme - make icons dark
+                    filter: brightness(0) saturate(100%) invert(8%) sepia(6%) saturate(2546%) hue-rotate(201deg) brightness(95%) contrast(89%);
+
+                    &:hover {
+                        transform: scale(1.1);
+                    }
+                }
+
+                .close {
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                }
+
+                // Dark theme - make icons white
+                &.dark .menu-icon {
+                    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+                }
+            }
+
+            // Mobile Menu Backdrop
+            .mobile-menu-backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                display: none;
+
+                @media (max-width : "1024px") {
+                    display: block;
+                }
+            }
+
+            // Mobile Menu
+            .mobile-menu {
+                display: none;
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: #fff;
+                transition: right 0.3s ease-in-out;
+                z-index: 1000;
+                box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+
+                @media (max-width : "1024px") {
+                    display: block;
+                }
+
+                &.open {
+                    right: 0;
+                }
+
+                .mobile-menu-content {
+                    padding: 80px 20px 20px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+
+                    .mobile-menu-item {
+                        padding: 15px 20px;
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: #001D34;
+                        cursor: pointer;
+                        border-radius: 8px;
+                        transition: background-color 0.2s ease;
+
+                        &:first-child {
+                            cursor: default;
+                            font-weight: 400;
+                            opacity: 0.8;
+                            font-size: 14px;
+                            background: #f5f5f5;
+                        }
+
+                        &:not(:first-child):hover {
+                            background: #f0f0f0;
+                        }
+
+                        &.dark {
+                            color: #fff;
+
+                            &:first-child {
+                                background: #333;
+                                color: #fff;
+                                opacity: 0.7;
+                            }
+
+                            &:not(:first-child):hover {
+                                background: #444;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Dark mode for mobile menu
+            .mobile-menu.dark {
+                background: #1a1a1a;
             }
         }
     }

@@ -8,7 +8,7 @@ import NavigationProvider from '../components/NavigationProvider';
 import PropTypes from 'prop-types';
 import { Toaster } from 'react-hot-toast';
 
-export default function ClientLayout({ children, gotham }) {
+export default function ClientLayout({ children }) {
   const pathname = usePathname();
   let darkSrc = '/assets/video/dark_video_wave.mp4';
   let lightSrc = '/assets/video/light_video_wave.mp4';
