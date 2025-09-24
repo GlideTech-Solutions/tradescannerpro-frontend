@@ -171,3 +171,10 @@ z-index: 999;
     }
   }
 }
+@media (max-width: 767px) {
+video.theme-bg-video{
+  top: unset !important;
+  bottom: 20px !important;
+  height: calc(228px + 35vh) !important;
+}
+}
