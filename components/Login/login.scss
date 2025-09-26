@@ -194,3 +194,53 @@
     }
   }
 }
+
+/* Error state for fields (reusing your .field/.input) */
+.field.has-error .input {
+  border-color: #ff5a5a !important;
+  box-shadow: 0 0 0 2px rgba(255, 90, 90, 0.1);
+}
+.error-msg {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #b10000;
+  &.dark { color: #ffb3b3; }
+}
+
+/* Live password rules block */
+.pwd-rules {
+  margin: 10px 0 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f6f8fb;
+  border: 1px solid rgba(0,0,0,0.06);
+
+  .rule {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: #334155; line-height: 1.4;
+    margin: 4px 0;
+
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #94a3b8; /* default */
+    }
+    &.ok {
+      color: #11623b;
+      .dot { background: #16a34a; }
+    }
+  }
+
+  &.dark {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.08);
+    .rule { color: #cbd5e1; }
+    .rule .dot { background: #64748b; }
+    .rule.ok { color: #86efac; }
+    .rule.ok .dot { background: #22c55e; }
+  }
+}
+
+/* Ensure eye button hit-area is comfy */
+.field .eyeBtn {
+  min-width: 36px; min-height: 36px;
+}
