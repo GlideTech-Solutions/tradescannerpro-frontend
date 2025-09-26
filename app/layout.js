@@ -4,17 +4,13 @@
 'use client';
 // import localFont from 'next/font/local';
 import ClientLayout from './ClientLayout';
-import { DM_Sans } from "next/font/google"
-
+import { gotham } from './font';
 import './globals.scss';
-const dmSans = DM_Sans({
-	variable: "--font-dm-sans",
-	subsets: ["latin"],
-})
+
 
   export default function RootLayout({ children }) {
     return (
-      <html lang="en">
+      <html lang="en" className={`${gotham.variable}`}>
         <head>
           
           <title>TradeScannerPro - Crypto Scanner for Explosive Move Detection</title>
@@ -22,7 +18,7 @@ const dmSans = DM_Sans({
           <link rel="alternate icon" href="/favicon.ico" />
           <link rel="apple-touch-icon" href="/logo.png" />
         </head>
-        <body className={`${dmSans.variable}  antialiased`} style={{position: 'relative', minHeight: '100vh', overflow: ''}}>
+        <body className={`${gotham.variable}  antialiased`} style={{position: 'relative', minHeight: '100vh', overflow: ''}}>
           <ClientLayout >{children}</ClientLayout>
         </body>
       </html>
