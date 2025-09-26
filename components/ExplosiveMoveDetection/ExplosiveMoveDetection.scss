@@ -96,7 +96,9 @@
         margin: 0 auto;
         @media (max-width: "767px") {
           // height: auto;
-          height: calc(100vh - 300px);
+          height: calc(100vh - 413px);
+          position: fixed;
+          bottom: 1px;
         }
 
         img {

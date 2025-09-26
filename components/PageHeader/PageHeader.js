@@ -10,7 +10,9 @@ export default function PageHeader() {
   const { setErrorState } = useScan();
   const router = useRouter();
   const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const pathname = usePathname();
 
@@ -21,7 +23,8 @@ export default function PageHeader() {
       if (userData) {
         try {
           const user = JSON.parse(userData);
-          setUserName( user.email || "User");
+          setUserName(user.name || user.email || "User");
+          setUserEmail(user.email || "");
         } catch (error) {
           console.error("Error parsing user data:", error);
         }
@@ -52,13 +55,35 @@ export default function PageHeader() {
   };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    if (isMobileMenuOpen) {
+      setIsClosing(true);
+      setTimeout(() => {
+        setIsMobileMenuOpen(false);
+        setIsClosing(false);
+      }, 400); // Match the CSS transition duration
+    } else {
+      setIsMobileMenuOpen(true);
+    }
+  };
+
+  const closeMobileMenu = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsMobileMenuOpen(false);
+      setIsClosing(false);
+    }, 400);
   };
 
   const handleMenuClick = (action) => {
-    setIsMobileMenuOpen(false);
+    closeMobileMenu();
     if (action === 'dashboard') {
       router.push("/move-opportunities");
+    } else if (action === 'bullish') {
+      router.push("/move-opportunities");
+    } else if (action === 'bearish') {
+      router.push("/move-opportunities");
+    } else if (action === 'settings') {
+      router.push("/setting");
     } else if (action === 'logout') {
       handleLogout();
     }
@@ -72,7 +97,7 @@ export default function PageHeader() {
   return (
     <div className="pageHeader-section">
       <div className="pageHeader-alignment">
-        <div
+        <button
           className="pageHeader-logo"
           onClick={() => {
             router.push("/");
@@ -83,7 +108,7 @@ export default function PageHeader() {
           ) : (
             <img src="/assets/logo/logo.svg" alt="logo" />
           )}
-        </div>
+        </button>
 
         <div className="pageHeader-rightSide-alignment">
           {/* Desktop Menu */}
@@ -92,57 +117,84 @@ export default function PageHeader() {
               <li className={`${isDarkMode ? "dark" : ""}`}>
                 {userName}
               </li>
-              <li
-                className={`${isDarkMode ? "dark" : ""}`}
-                onClick={() => {
-                  router.push("/move-opportunities");
-                }}
-              >
-                Dashboard
+              <li>
+                <button
+                  className={`${isDarkMode ? "dark" : ""}`}
+                  onClick={() => {
+                    router.push("/move-opportunities");
+                  }}
+                >
+                  Dashboard
+                </button>
               </li>
-              <li
-                className={`${isDarkMode ? "dark" : ""}`}
-                onClick={handleLogout}
-              >
-                Logout
+              <li>
+                <button
+                  className={`${isDarkMode ? "dark" : ""}`}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
               </li>
             </ul>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className={`mobile-menu-button ${isDarkMode ? 'dark' : ''}`} onClick={toggleMobileMenu}>
+          <button 
+            className={`mobile-menu-button ${isDarkMode ? 'dark' : ''}`} 
+            onClick={toggleMobileMenu}
+          >
             {isMobileMenuOpen ? (
               <img src="/assets/icons/close.svg" alt="Close Menu" className="menu-icon close" />
             ) : (
               <img src="/assets/icons/bars.svg" alt="Open Menu" className="menu-icon" />
             )}
-          </div>
+          </button>
 
           {/* Mobile Menu Backdrop */}
           {isMobileMenuOpen && (
-            <div 
-              className="mobile-menu-backdrop" 
-              onClick={() => setIsMobileMenuOpen(false)}
-            ></div>
+            <button 
+              className={`mobile-menu-backdrop ${isMobileMenuOpen && !isClosing ? 'show' : ''}`}
+              onClick={closeMobileMenu}
+            ></button>
           )}
 
           {/* Mobile Menu */}
-          <div className={`mobile-menu ${isDarkMode ? 'dark' : ''} ${isMobileMenuOpen ? 'open' : ''}`}>
-            <div className="mobile-menu-content">
-              <div className={`mobile-menu-item ${isDarkMode ? "dark" : ""}`}>
-                {userName}
+          <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+            {/* Menu Content */}
+            <div className={`mobile-menu-content ${isDarkMode ? 'dark' : ''}`}>
+              {/* User Profile Section */}
+              <div className="mobile-menu-user-profile">
+                <div className="user-avatar">
+                  <div className="avatar-icon">
+                    <img src="/assets/icons/avatar.svg" alt="User" />
+                  </div>
+                </div>
+                <div className="user-info">
+                  <div className="user-name">{userName}</div>
+                  <div className="user-email">{userEmail}</div>
+                </div>
               </div>
-              <div 
-                className={`mobile-menu-item ${isDarkMode ? "dark" : ""}`}
-                onClick={() => handleMenuClick('dashboard')}
-              >
-                Dashboard
-              </div>
-              <div 
-                className={`mobile-menu-item ${isDarkMode ? "dark" : ""}`}
-                onClick={() => handleMenuClick('logout')}
-              >
-                Logout
+              
+              {/* Navigation Items */}
+              <div className="mobile-menu-nav">
+                <button 
+                  className="mobile-menu-nav-item"
+                  onClick={() => handleMenuClick('dashboard')}
+                >
+                  <img src="/assets/icons/dashboard.svg" alt="Dashboard" className="" />
+                  <span>Dashboard</span>
+                </button>
+                
+             
+             
+                
+                <button 
+                  className="mobile-menu-nav-item"
+                  onClick={() => handleMenuClick('logout')}
+                >
+                  <img src="/assets/icons/sign-out-alt.svg" alt="Logout" className="nav-icon" />
+                  <span>Logout</span>
+                </button>
               </div>
             </div>
           </div>
@@ -158,7 +210,9 @@ export default function PageHeader() {
 
               {/* Mobile Run Scan Button */}
               <div className="headerrun-button-alignment mobile-scan-button">
-                <div onClick={handleScan}>
+                <div 
+                  onClick={handleScan}
+                >
                   <img src="/assets/icons/button.svg" alt="scan icon" />
                 </div>
               </div>
