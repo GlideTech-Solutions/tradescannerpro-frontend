@@ -39,16 +39,20 @@ export default function MarketBreakouts() {
   }, [setErrorState, setLoadingState, updateScanResult, router]);
 
   useEffect(() => {
-    // Only auto-scan once if coming from the header "Run Scan" button
+    // Auto-scan when page loads or if coming from the header "Run Scan" button
     const shouldAutoScan = searchParams.get("autoScan") === "true";
-    if (shouldAutoScan && !hasAutoScanned.current) {
+    
+    // Always auto-scan once when the component mounts, unless already scanned
+    if (!hasAutoScanned.current) {
       hasAutoScanned.current = true;
       handleScan();
 
-      // Clean up the URL parameter to prevent re-execution
-      const newUrl = new URL(window.location);
-      newUrl.searchParams.delete("autoScan");
-      window.history.replaceState({}, "", newUrl.pathname);
+      // Clean up the URL parameter if it exists to prevent re-execution
+      if (shouldAutoScan) {
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete("autoScan");
+        window.history.replaceState({}, "", newUrl.pathname);
+      }
     }
   }, [searchParams, handleScan]);
 
@@ -76,7 +80,7 @@ export default function MarketBreakouts() {
           <div></div>
           {error && (
             <div className="scan-error" style={{ color: "red", marginTop: 8 }}>
-              {error}
+                {error}
             </div>
           )}
         </div>
