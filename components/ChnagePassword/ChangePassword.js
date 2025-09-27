@@ -140,7 +140,7 @@ export default function ChangePassword() {
 		<div className="login-page">
 			<div className="login-box">
 				<PageLogo />
-				<h1 className={`${isDarkMode ? "dark" : ""}`}>Change Password</h1>
+				<h1 className={`${isDarkMode ? "dark" : ""}`}>Set Your Password</h1>
 
 				<form onSubmit={handleSubmit} noValidate>
 					{/* Old password */}
