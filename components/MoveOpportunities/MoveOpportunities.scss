@@ -102,56 +102,60 @@
 
         .tabs-wrapper {
             display: flex;
-            background: #F4F5FF;
-            border-radius: 100px;
-            padding: 4px;
-            border: 1px solid #C8C8E3;
-
-            &.dark {
-                background: #0E263A;
-                border: 1px solid #8BB9FF4D;
-            }
+            background: transparent;
+            border-radius: 12px;
+            padding: 0;
+            gap: 0;
 
             .tab-button {
-                padding: 12px 24px;
+                padding: 16px 32px;
                 border: none;
-                background: transparent;
-                border-radius: 100px;
+                background: #8085FF26;
+
+                border-radius: 12px;
                 font-weight: 500;
                 font-size: 16px;
                 line-height: 100%;
-                letter-spacing: -2%;
-                color: #001D34;
+                letter-spacing: -0.02em;
+                color: #4A4A4A;
                 cursor: pointer;
                 transition: all 0.3s ease;
+                margin-right: 8px;
+
+                &:last-child {
+                    margin-right: 0;
+                }
 
                 &.dark {
+                    background: #8085FF26;
+
+
                     color: rgba(255, 255, 255, 0.7);
                 }
 
                 &.active {
-                    background: linear-gradient(100.43deg, #01D5ED -9.3%, #2A7AF3 42.7%, #7D42F2 94.69%);
+                    background: #7D42F2;
                     color: #FFFFFF;
-                    box-shadow: 0 4px 12px rgba(125, 66, 242, 0.3);
+                    box-shadow: 0 2px 8px rgba(125, 66, 242, 0.2);
 
                     &.dark {
-                        background: linear-gradient(100.43deg, #01D5ED -9.3%, #2A7AF3 42.7%, #7D42F2 94.69%);
+                        background: #7D42F2;
                         color: #FFFFFF;
                     }
                 }
 
                 &:hover:not(.active) {
-                    background: rgba(125, 66, 242, 0.1);
-                    color: #7D42F2;
+                    background: #D1D5DB;
+                    color: #374151;
 
                     &.dark {
-                        background: rgba(125, 66, 242, 0.2);
-                        color: #8085FF;
+                        background: #3A4A5A;
+                        color: rgba(255, 255, 255, 0.9);
                     }
                 }
 
                 @media (max-width: 767px) {
-                    padding: 10px 16px;
+                    padding: 12px 20px;
                     font-size: 14px;
                 }
             }

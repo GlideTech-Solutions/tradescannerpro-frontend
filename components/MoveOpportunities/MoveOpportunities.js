@@ -33,23 +33,35 @@ export default function MoveOpportunities() {
         try {
             setTabLoading(prev => ({ ...prev, [category]: true }));
             
-            let response;
-            switch (category) {
-                case 'neutral':
-                    response = await apiClient.getNeutralPicks();
-                    break;
-                case 'strong_bullish':
-                    response = await apiClient.getBullishPicks();
-                    break;
-                case 'strong_bearish':
-                    response = await apiClient.getBearishPicks();
-                    break;
-                default:
-                    throw new Error('Invalid category');
+            // Get all scan data
+            const response = await apiClient.getScanData();
+            
+            // Filter data based on category
+            let filteredData = response;
+            if (response && response.data && Array.isArray(response.data)) {
+                const filteredCoins = response.data.filter((coin) => {
+                    const coinStrength = coin.strength;
+                    
+                    switch (category) {
+                        case 'neutral':
+                            return coinStrength === 'Neutral';
+                        case 'strong_bullish':
+                            return coinStrength === 'Bullish' || coinStrength === 'Strong Bullish';
+                        case 'strong_bearish':
+                            return coinStrength === 'Bearish' || coinStrength === 'Strong Bearish';
+                        default:
+                            return true;
+                    }
+                });
+                
+                filteredData = {
+                    ...response,
+                    data: filteredCoins
+                };
             }
 
             // Update tab data
-            setTabData(prev => ({ ...prev, [category]: response }));
+            setTabData(prev => ({ ...prev, [category]: filteredData }));
             
             // Update category in context
             updateCategory(category);

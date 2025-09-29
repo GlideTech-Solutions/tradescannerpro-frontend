@@ -26,14 +26,8 @@ export async function GET(request) {
 			);
 		}
 
-		// Get category parameter from query string
-		const { searchParams } = new URL(request.url);
-		const category = searchParams.get('category');
-		
-		// Build the external API URL with category parameter
-		const externalApiUrl = category 
-			? `${API_BASE_URL}/crypto/scan?category=${category}`
-			: `${API_BASE_URL}/crypto/scan`;
+		// Always call the external API to get all data
+		const externalApiUrl = `${API_BASE_URL}/crypto/scan`;
 
 		// Forward the request to the external API
 		const response = await fetch(externalApiUrl, {
