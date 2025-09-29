@@ -8,8 +8,7 @@ import apiClient from "@/lib/api-client";
 
 export default function PageHeader() {
 	const { isDarkMode, isInitialized } = useTheme();
-	const { setErrorState, updateScanResult, setLoadingState, updateCategory, setCategoryLoadingState } =
-		useScan();
+	const { setErrorState } = useScan();
 	const router = useRouter();
 	const [userName, setUserName] = useState("");
 	const [userEmail, setUserEmail] = useState("");
@@ -58,7 +57,7 @@ export default function PageHeader() {
 
 	// Hide Run Scan on home and explosive-move-detection routes
 	const hideRunScan =
-		pathname === "/" || pathname === "/explosive-move-detection";
+		pathname === "/" || pathname === "/categories";
 
 	const handleLogout = async () => {
 		try {
@@ -78,68 +77,6 @@ export default function PageHeader() {
 		router.push("/market-breakouts?autoScan=true");
 	};
 
-	const handleCategoryScan = async (category) => {
-		try {
-			setCategoryLoadingState(true);
-			setLoadingState(true);
-			setErrorState(null);
-
-			// Update category in context
-			updateCategory(category);
-
-			let response;
-			switch (category) {
-				case "neutral":
-					response = await apiClient.getNeutralPicks();
-					break;
-				case "strong_bullish":
-					response = await apiClient.getBullishPicks();
-					break;
-				case "strong_bearish":
-					response = await apiClient.getBearishPicks();
-					break;
-				default:
-					throw new Error("Invalid category");
-			}
-
-			// Update scan result with the response
-			const dataToUpdate = response.data || response;
-			
-			// Ensure data has the correct structure
-			let finalData = dataToUpdate;
-			if (Array.isArray(dataToUpdate)) {
-				finalData = { data: dataToUpdate };
-			} else if (dataToUpdate && !dataToUpdate.data) {
-				// Check if the response itself is an array of coins
-				if (Array.isArray(dataToUpdate)) {
-					finalData = { data: dataToUpdate };
-				}
-			}
-			
-			// Navigate first, then update data
-			router.push('/move-opportunities');
-			
-			// Update scan result after navigation
-			updateScanResult(finalData);
-		} catch (error) {
-			console.error("Category scan error:", error);
-			
-			// Check if it's a session expired error
-			if (error.isSessionExpired || error.message?.includes('Session expired')) {
-				// Don't set error state for session expired - apiClient already handles this
-				// Just clear loading states and let the redirect happen
-				setCategoryLoadingState(false);
-				setLoadingState(false);
-				return;
-			}
-			
-			// For other errors, set error state
-			setErrorState(error.message || "Failed to fetch category data");
-		} finally {
-			setCategoryLoadingState(false);
-			setLoadingState(false);
-		}
-	};
 
 	const toggleMobileMenu = () => {
 		if (isMobileMenuOpen) {
@@ -168,12 +105,6 @@ export default function PageHeader() {
 			handleScan();
 		} else if (action === "top5") {
 			router.push("/categories");
-		} else if (action === "neutral") {
-			handleCategoryScan("neutral");
-		} else if (action === "bullish") {
-			handleCategoryScan("strong_bullish");
-		} else if (action === "bearish") {
-			handleCategoryScan("strong_bearish");
 		} else if (action === "settings") {
 			router.push("/setting");
 		} else if (action === "logout") {
@@ -217,30 +148,6 @@ export default function PageHeader() {
 									</button>
 								</li>
 								
-								<li>
-									<button
-										className={`${isDarkMode ? "dark" : ""}`}
-										onClick={() => handleCategoryScan("neutral")}
-									>
-										Top Neutral
-									</button>
-								</li>
-								<li>
-									<button
-										className={`${isDarkMode ? "dark" : ""}`}
-										onClick={() => handleCategoryScan("strong_bullish")}
-									>
-										Top Bullish Picks
-									</button>
-								</li>
-								<li>
-									<button
-										className={`${isDarkMode ? "dark" : ""}`}
-										onClick={() => handleCategoryScan("strong_bearish")}
-									>
-										Top Bearish Picks
-									</button>
-								</li>
 								<li>
 									<button
 										className={`${isDarkMode ? "dark" : ""}`}
@@ -317,41 +224,6 @@ export default function PageHeader() {
 
 							
 
-								<button
-									className="mobile-menu-nav-item"
-									onClick={() => handleMenuClick("neutral")}
-								>
-									<img
-										src="/assets/icons/chart-simple.svg"
-										alt="Neutral"
-										className="nav-icon"
-									/>
-									<span>Top Neutral</span>
-								</button>
-
-								<button
-									className="mobile-menu-nav-item"
-									onClick={() => handleMenuClick("bullish")}
-								>
-									<img
-										src="/assets/icons/arrow-green.svg"
-										alt="Bullish"
-										className="nav-icon"
-									/>
-									<span>Top Bullish Picks</span>
-								</button>
-
-								<button
-									className="mobile-menu-nav-item"
-									onClick={() => handleMenuClick("bearish")}
-								>
-									<img
-										src="/assets/icons/arrow-red.svg"
-										alt="Bearish"
-										className="nav-icon"
-									/>
-									<span>Top Bearish Picks</span>
-								</button>
 
 								<button
 									className="mobile-menu-nav-item"
@@ -368,7 +240,7 @@ export default function PageHeader() {
 						</div>
 						</div>
 					)}
-					{!hideRunScan || isAuthenticated() && (
+					{hideRunScan || isAuthenticated() && (
 						<>
 							{/* Desktop Run Scan Button */}
 							<div className="headerrun-button-alignment desktop-scan-button">

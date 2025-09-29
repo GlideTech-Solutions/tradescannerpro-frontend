@@ -44,9 +44,6 @@ export const ScanProvider = ({ children }) => {
           localStorage.removeItem('last_scan_time');
         }
       }
-      
-      // Ensure loading state is false after loading from localStorage
-      setIsLoading(false);
     }
   }, []);
 

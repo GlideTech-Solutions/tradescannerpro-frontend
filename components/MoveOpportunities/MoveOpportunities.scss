@@ -95,6 +95,69 @@
 
     }
 
+    .tabs-container {
+        margin: 30px 0 0 0;
+        display: flex;
+        justify-content: center;
+
+        .tabs-wrapper {
+            display: flex;
+            background: #F4F5FF;
+            border-radius: 100px;
+            padding: 4px;
+            border: 1px solid #C8C8E3;
+
+            &.dark {
+                background: #0E263A;
+                border: 1px solid #8BB9FF4D;
+            }
+
+            .tab-button {
+                padding: 12px 24px;
+                border: none;
+                background: transparent;
+                border-radius: 100px;
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 100%;
+                letter-spacing: -2%;
+                color: #001D34;
+                cursor: pointer;
+                transition: all 0.3s ease;
+
+                &.dark {
+                    color: rgba(255, 255, 255, 0.7);
+                }
+
+                &.active {
+                    background: linear-gradient(100.43deg, #01D5ED -9.3%, #2A7AF3 42.7%, #7D42F2 94.69%);
+                    color: #FFFFFF;
+                    box-shadow: 0 4px 12px rgba(125, 66, 242, 0.3);
+
+                    &.dark {
+                        background: linear-gradient(100.43deg, #01D5ED -9.3%, #2A7AF3 42.7%, #7D42F2 94.69%);
+                        color: #FFFFFF;
+                    }
+                }
+
+                &:hover:not(.active) {
+                    background: rgba(125, 66, 242, 0.1);
+                    color: #7D42F2;
+
+                    &.dark {
+                        background: rgba(125, 66, 242, 0.2);
+                        color: #8085FF;
+                    }
+                }
+
+                @media (max-width: 767px) {
+                    padding: 10px 16px;
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+
     .moveOpportunities-details-alignment {
         margin: 40px 0 0 0;
         padding: 0 20px 20px 20px;
@@ -369,7 +432,7 @@
                         height: 48px;
                         background: transparent;
                         color: #001D34;
-                        border: 1px solid #001D3480;
+                        border: 1.5px solid #C8C8E3;
                         border-radius: 100px;
 
                         &.dark {

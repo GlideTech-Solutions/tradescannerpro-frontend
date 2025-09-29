@@ -1,5 +1,6 @@
 "use client";
 
+import Dashboard from "@/components/Dashboard/Dashboard";
 import ExplosiveMoveDetection from "../components/ExplosiveMoveDetection/ExplosiveMoveDetection";
 import ThemeToggleBtn from "../components/ThemeToggleBtn";
 
@@ -9,7 +10,7 @@ export default function Home() {
       <div className="content">
         <ThemeToggleBtn />
 
-        <ExplosiveMoveDetection />
+        <Dashboard />
       </div>
     </main>
   );

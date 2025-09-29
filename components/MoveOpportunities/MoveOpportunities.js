@@ -1,50 +1,98 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PageHeader from '../PageHeader/PageHeader'
 import "./MoveOpportunities.scss";
 import { useTheme } from '../../context/ThemeContext';
 import { useScan } from '../../context/ScanContext';
 import { useRouter } from 'next/navigation';
 import { formatScanTime } from '../../lib/timeUtils';
+import apiClient from '../../lib/api-client';
 
 export default function MoveOpportunities() {
     const { isDarkMode } = useTheme();
-    const { scanResult, lastScanTime, isLoading, categoryHeading, setLoadingState, isCategoryLoading } = useScan();
+    const { lastScanTime, updateCategory } = useScan();
     const router = useRouter();
 
-    // Get the data array, handling different data structures
-    const dataArray = scanResult?.data || (Array.isArray(scanResult) ? scanResult : []);
+    // Tab state
+    const [activeTab, setActiveTab] = useState('neutral');
+    const [tabData, setTabData] = useState({
+        neutral: null,
+        strong_bullish: null,
+        strong_bearish: null
+    });
+    const [tabLoading, setTabLoading] = useState({
+        neutral: false,
+        strong_bullish: false,
+        strong_bearish: false
+    });
 
+    // Get the data array, handling different data structures
+    const dataArray = tabData[activeTab]?.data || (Array.isArray(tabData[activeTab]) ? tabData[activeTab] : []);
+
+    // API call functions for each tab
+    const fetchTabData = async (category) => {
+        try {
+            setTabLoading(prev => ({ ...prev, [category]: true }));
+            
+            let response;
+            switch (category) {
+                case 'neutral':
+                    response = await apiClient.getNeutralPicks();
+                    break;
+                case 'strong_bullish':
+                    response = await apiClient.getBullishPicks();
+                    break;
+                case 'strong_bearish':
+                    response = await apiClient.getBearishPicks();
+                    break;
+                default:
+                    throw new Error('Invalid category');
+            }
+
+            // Update tab data
+            setTabData(prev => ({ ...prev, [category]: response }));
+            
+            // Update category in context
+            updateCategory(category);
+            
+        } catch (error) {
+            console.error(`Error fetching ${category} data:`, error);
+        } finally {
+            setTabLoading(prev => ({ ...prev, [category]: false }));
+        }
+    };
+
+    // Handle tab change
+    const handleTabChange = (category) => {
+        setActiveTab(category);
+        
+        // Fetch data if not already loaded
+        if (!tabData[category]) {
+            fetchTabData(category);
+        } else {
+            // Update category in context even if data is already loaded
+            updateCategory(category);
+        }
+    };
+
+    // Load initial data
+    useEffect(() => {
+        fetchTabData(activeTab);
+    }, []);
 
     // Redirect to market-breakouts if no scan data available (but not during initial load or loading)
     React.useEffect(() => {
         // Check if we have valid data without depending on dataArray
-        const hasValidData = scanResult && 
-            ((Array.isArray(scanResult?.data) && scanResult.data.length > 0) || 
-             (Array.isArray(scanResult) && scanResult.length > 0));
+        const hasValidData = tabData[activeTab] && 
+            ((Array.isArray(tabData[activeTab]?.data) && tabData[activeTab].data.length > 0) || 
+             (Array.isArray(tabData[activeTab]) && tabData[activeTab].length > 0));
         
-        if (!isLoading && !hasValidData) {
+        if (!tabLoading[activeTab] && !hasValidData && tabData[activeTab] !== null) {
             router.push('/market-breakouts');
         }
-    }, [scanResult, router, isLoading]);
-
-    // Ensure loading state is false if we have data (but only if not currently loading from API)
-    React.useEffect(() => {
-        if (scanResult && Array.isArray(scanResult?.data) && scanResult.data.length > 0 && isLoading) {
-            // Only reset loading state if this data came from localStorage (not from a fresh API call)
-            // We can detect this by checking if the data was just updated (within last 2 seconds)
-            const now = new Date();
-            const scanTime = new Date(lastScanTime);
-            const timeDiff = now - scanTime;
-            
-            // If data is older than 2 seconds, it's from localStorage, so we can reset loading
-            if (timeDiff > 2000) {
-                setLoadingState(false);
-            }
-        }
-    }, [scanResult, isLoading, setLoadingState, lastScanTime]);
+    }, [tabData, activeTab, tabLoading, router]);
 
     // Show loading state during initial load or when loading
-    if (isLoading || isCategoryLoading) {
+    if (tabLoading[activeTab]) {
         return (
             <div>
                 <PageHeader />
@@ -60,7 +108,7 @@ export default function MoveOpportunities() {
 
     // Don't redirect during render - this will be handled in useEffect
     // If no data and not loading, show nothing (redirect will happen in useEffect)
-    if (!isLoading && !isCategoryLoading && (!scanResult || dataArray.length === 0)) {
+    if (!tabLoading[activeTab] && (!tabData[activeTab] || dataArray.length === 0)) {
         return null;
     }
 
@@ -115,6 +163,20 @@ const formatMarketCap = (marketCap) => {
   };
   
  
+    // Get tab labels
+    const getTabLabel = (category) => {
+        switch (category) {
+            case 'neutral':
+                return 'Top Neutral';
+            case 'strong_bullish':
+                return 'Top Bullish Picks';
+            case 'strong_bearish':
+                return 'Top Bearish Picks';
+            default:
+                return category;
+        }
+    };
+
     return (
         <div>
             <PageHeader />
@@ -123,12 +185,27 @@ const formatMarketCap = (marketCap) => {
                 <div className='moveOpportunities-welcome-line'>
                     <p>Last scan: {formatScanTime(lastScanTime)}</p>
 
-                    <h1 className={`${isDarkMode ? 'dark' : ''}`}>{categoryHeading}</h1>
+                    <h1 className={`${isDarkMode ? 'dark' : ''}`}>{getTabLabel(activeTab)}</h1>
+                </div>
+
+                {/* Tab Navigation */}
+                <div className='tabs-container'>
+                    <div className='tabs-wrapper'>
+                        {['neutral', 'strong_bullish', 'strong_bearish'].map((category) => (
+                            <button
+                                key={category}
+                                className={`tab-button ${activeTab === category ? 'active' : ''} ${isDarkMode ? 'dark' : ''}`}
+                                onClick={() => handleTabChange(category)}
+                            >
+                                {getTabLabel(category)}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                                 <div className='moveOpportunities-details-alignment'>
                                         <div className='moveOpportunities-grid-alignment'>
-                                                {Array.isArray(scanResult?.data) && scanResult.data.map((coin, idx) => (
+                                                {Array.isArray(dataArray) && dataArray.map((coin, idx) => (
                                                     <div className={`moveOpportunities-grid-item-alignment ${isDarkMode ? 'dark' : ''}`} key={coin.id || idx}>
                                                         <div className='moveOpportunities-top-heading'>
                                                             <div className='moveOpportunoties-left-side-alignment'>

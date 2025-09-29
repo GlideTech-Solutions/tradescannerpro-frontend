@@ -105,7 +105,7 @@ export default function Login() {
       if (data.data?.access_token) {
         toast.success("Login successful!");
         localStorage.setItem("user", JSON.stringify(data.data.user));
-        router.push("/explosive-move-detection");
+        router.push("/categories");
       } else {
         toast.error("Login failed: No token received.");
       }
