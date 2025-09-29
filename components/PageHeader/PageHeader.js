@@ -211,19 +211,12 @@ export default function PageHeader() {
 								<li>
 									<button
 										className={`${isDarkMode ? "dark" : ""}`}
-										onClick={handleScan}
+										onClick={() => router.push("/categories")}
 									>
 										Dashboard
 									</button>
 								</li>
-								<li>
-									<button
-										className={`${isDarkMode ? "dark" : ""}`}
-										onClick={() => router.push("/categories")}
-									>
-										Top 5
-									</button>
-								</li>
+								
 								<li>
 									<button
 										className={`${isDarkMode ? "dark" : ""}`}
@@ -312,7 +305,7 @@ export default function PageHeader() {
 							<div className="mobile-menu-nav">
 								<button
 									className="mobile-menu-nav-item"
-									onClick={() => handleMenuClick("dashboard")}
+									onClick={() => handleMenuClick("top5")}
 								>
 									<img
 										src="/assets/icons/dashboard.svg"
@@ -322,17 +315,7 @@ export default function PageHeader() {
 									<span>Dashboard</span>
 								</button>
 
-								<button
-									className="mobile-menu-nav-item"
-									onClick={() => handleMenuClick("top5")}
-								>
-									<img
-										src="/assets/icons/chart-simple.svg"
-										alt="Top 5"
-										className="nav-icon"
-									/>
-									<span>Top 5</span>
-								</button>
+							
 
 								<button
 									className="mobile-menu-nav-item"
