@@ -1,8 +1,63 @@
 @import "../../app/globals.scss";
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 20px;
+
+    .loading-spinner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            
+            // Make spinner visible in light mode by inverting colors
+            filter: invert(1);
+            
+            // Dark mode - keep original white color
+            .dark & {
+                filter: none;
+            }
+        }
+
+        div {
+            font-size: 16px;
+            color: #666;
+            font-weight: 400;
+        }
+        
+        // Dark mode support for the entire loading spinner
+        &.dark {
+            div {
+                color: #fff;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .arrow-icon{
     padding-right: 5px;
 }
 .moveOpportunities-section {
+    min-height: calc(100vh - 120px); // Account for header and footer
+    padding-bottom: 20px;
+    
     .moveOpportunities-welcome-line {
         max-width: 570px;
         margin: 0 auto;
@@ -325,12 +380,14 @@
 
                         &:hover {
                             cursor: pointer;
-                            background: #fff;
-                            color: #000;
+                            background: linear-gradient(100.43deg, #01D5ED -9.3%, #2A7AF3 42.7%, #7D42F2 94.69%);
+
+                            color: #fff;
 
                             &.dark {
-                                background: #8085FF80;
-                                color: #001D34;
+                                background: linear-gradient(100.43deg, #01D5ED -9.3%, #2A7AF3 42.7%, #7D42F2 94.69%);
+
+                                color: #fff;
                             }
                         }
 

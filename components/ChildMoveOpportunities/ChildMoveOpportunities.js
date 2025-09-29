@@ -2,9 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import PageHeader from "../PageHeader/PageHeader";
 import "./ChildMoveOpportunities.scss";
 import { useTheme } from "../../context/ThemeContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ChartCard from "./ChartCard";
-import { useSearchParams } from 'next/navigation';
 import { useScan } from "../../context/ScanContext";
 import apiClient from '../../lib/api-client';
 import Loading from '../Loading';
@@ -45,9 +44,17 @@ export default function ChildMoveOpportunities() {
 
   // Find the coin data from scan results
   const coinData = useMemo(() => {
+    console.log("ChildMoveOpportunities: Finding coin data...");
+    console.log("- scanResult:", scanResult);
+    console.log("- coinId:", coinId);
+    
     if (!scanResult?.data || !coinId) {
+      console.log("No scanResult.data or coinId available");
       return null;
     }
+    
+    console.log("Available coins in scanResult.data:", scanResult.data.length);
+    console.log("First few coins:", scanResult.data.slice(0, 3));
     
     // Try multiple search strategies
     let foundCoin = null;
@@ -55,12 +62,14 @@ export default function ChildMoveOpportunities() {
     // Strategy 1: Exact match
     foundCoin = scanResult.data.find(coin => coin.id === coinId);
     if (foundCoin) {
+      console.log("Found coin with exact ID match:", foundCoin);
       return foundCoin;
     }
     
     // Strategy 2: String conversion match
     foundCoin = scanResult.data.find(coin => String(coin.id) === String(coinId));
     if (foundCoin) {
+      console.log("Found coin with string ID match:", foundCoin);
       return foundCoin;
     }
     
@@ -70,17 +79,28 @@ export default function ChildMoveOpportunities() {
       coin.name?.toLowerCase() === coinId?.toLowerCase()
     );
     
+    if (foundCoin) {
+      console.log("Found coin with symbol/name match:", foundCoin);
+    } else {
+      console.log("No coin found with any strategy");
+    }
+    
     return foundCoin || null;
   }, [scanResult, coinId]);
 
   useEffect(() => {
     if (coinId) {
+      console.log("ChildMoveOpportunities: Fetching coin history for ID:", coinId);
       setLoading(true);
       setError(null);
       
         apiClient.getCoinHistory(coinId)
-          .then(data => setCoinHistory(data))
+          .then(data => {
+            console.log("ChildMoveOpportunities: API response received:", data);
+            setCoinHistory(data);
+          })
           .catch(err => {
+            console.error("ChildMoveOpportunities: API error:", err);
             // Handle 401 errors (session expired) - API client will handle redirect and toast
             if (err.message?.includes('Session expired')) {
               // Don't show error state for session expiration as user will be redirected
@@ -101,15 +121,16 @@ export default function ChildMoveOpportunities() {
 
       <div className="moveOpportunities-child-section">
         <div className="moveOpportunities-child-details-alignment">
-          <div
+          <button
             className="moveOpportunities-child-child-back-alignment"
             onClick={() => {
-              router.push("/move-opportunities");
+              router.back();
             }}
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
           >
             <img src="/assets/icons/arrow-small-left.svg" alt="left arrow" />
             <span>Back to Top Explosive</span>
-          </div>
+          </button>
 
         
 

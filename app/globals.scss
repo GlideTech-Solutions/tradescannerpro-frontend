@@ -147,6 +147,73 @@ p {
   text-align: center;
 }
 
+// Legal pages styling
+.legal-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: left;
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: inherit;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem 0;
+    color: inherit;
+  }
+  
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: inherit;
+  }
+  
+  ul {
+    margin: 1rem 0;
+    padding-left: 2rem;
+    
+    li {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+      color: inherit;
+    }
+  }
+}
+
+.legal-content {
+  section {
+    margin-bottom: 2rem;
+  }
+}
+
+// Mobile responsive for legal pages
+@media (max-width: 768px) {
+  .legal-page {
+    padding: 1rem;
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    h2 {
+      font-size: 1.25rem;
+    }
+    
+    p, li {
+      font-size: 0.9rem;
+    }
+  }
+}
+
 .custom-light-dark-theme-section {
   position: fixed;
   right: 10px;

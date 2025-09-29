@@ -5,6 +5,7 @@ import ThemeVideo from '../components/ThemeVideo';
 import { usePathname } from 'next/navigation';
 import ErrorBoundary from '../components/ErrorBoundary';
 import NavigationProvider from '../components/NavigationProvider';
+import Footer from '../components/Footer/Footer';
 import PropTypes from 'prop-types';
 import { Toaster } from 'react-hot-toast';
 
@@ -19,66 +20,63 @@ export default function ClientLayout({ children }) {
     darkSrc = '/assets/video/coinpulse-gradient-with-loader-dark.mp4';
     lightSrc = '/assets/video/light_marketBreakout.mp4';
     videoHeight = 'calc(100vh - -280px)'; // account for header height
-    top = // bottom align
-      '0';
+    // top remains '0' for bottom align
   }
 
   return (
-    <>
-      <ThemeProvider>
-        <ScanProvider>
-          <NavigationProvider>
-            <ThemeVideo
-              key={pathname} // force remount on route change
-              darkSrc={darkSrc}
-              lightSrc={lightSrc}
-              style={{
-                position: 'fixed',
-                top: top,
-                left: 0,
-                width: '100vw',
-                height: videoHeight,
-                objectFit: 'cover',
-                zIndex: 0,
-                pointerEvents: 'none',
-              }}
-            />
-            <div style={{position: 'relative', zIndex: 1}}>
-              <ErrorBoundary>
-                {children}
-              </ErrorBoundary>
-              <Toaster 
-                position="top-center"
-                toastOptions={{
-                  duration: 4000,
+    <ThemeProvider>
+      <ScanProvider>
+        <NavigationProvider>
+          <ThemeVideo
+            key={pathname} // force remount on route change
+            darkSrc={darkSrc}
+            lightSrc={lightSrc}
+            style={{
+              position: 'fixed',
+              top: top,
+              left: 0,
+              width: '100vw',
+              height: videoHeight,
+              objectFit: 'cover',
+              zIndex: 0,
+              pointerEvents: 'none',
+            }}
+          />
+          <div style={{position: 'relative', zIndex: 1, minHeight: '100vh'}}>
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+            <Footer />
+            <Toaster 
+              position="top-center"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#333',
+                  color: '#fff',
+                },
+                error: {
+                  duration: 5000,
                   style: {
-                    background: '#333',
+                    background: '#dc3545',
                     color: '#fff',
                   },
-                  error: {
-                    duration: 5000,
-                    style: {
-                      background: '#dc3545',
-                      color: '#fff',
-                    },
+                },
+                success: {
+                  style: {
+                    background: '#28a745',
+                    color: '#fff',
                   },
-                  success: {
-                    style: {
-                      background: '#28a745',
-                      color: '#fff',
-                    },
-                  },
-                }}
-              />
-            </div>
-          </NavigationProvider>
-        </ScanProvider>
-      </ThemeProvider>
-    </>
+                },
+              }}
+            />
+          </div>
+        </NavigationProvider>
+      </ScanProvider>
+    </ThemeProvider>
   );
 }
 
 ClientLayout.propTypes = {
   children: PropTypes.node.isRequired,
-  gotham: PropTypes.string,
 };

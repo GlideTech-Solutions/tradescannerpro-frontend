@@ -4,8 +4,9 @@ export function middleware(request) {
   const token = request.cookies.get('auth_token')?.value;
   const { pathname } = request.nextUrl;
 
-  // Allow access to login and permission pages without token
-  if (pathname.startsWith('/login') || pathname.startsWith('/permission')) {
+  // Allow access to login, permission, terms, and privacy pages without token
+  if (pathname.startsWith('/login') || pathname.startsWith('/permission') || 
+      pathname.startsWith('/terms') || pathname.startsWith('/privacy')) {
    
     return NextResponse.next();
   }

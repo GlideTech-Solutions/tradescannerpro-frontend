@@ -8,42 +8,62 @@ import { formatScanTime } from '../../lib/timeUtils';
 
 export default function MoveOpportunities() {
     const { isDarkMode } = useTheme();
-    const { scanResult, lastScanTime, isLoading } = useScan();
+    const { scanResult, lastScanTime, isLoading, categoryHeading, setLoadingState, isCategoryLoading } = useScan();
     const router = useRouter();
-    const [isInitialLoad, setIsInitialLoad] = React.useState(true);
 
-    // Set initial load to false after component mounts
+    // Get the data array, handling different data structures
+    const dataArray = scanResult?.data || (Array.isArray(scanResult) ? scanResult : []);
+
+
+    // Redirect to market-breakouts if no scan data available (but not during initial load or loading)
     React.useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsInitialLoad(false);
-        }, 100); // Small delay to allow localStorage to load
+        // Check if we have valid data without depending on dataArray
+        const hasValidData = scanResult && 
+            ((Array.isArray(scanResult?.data) && scanResult.data.length > 0) || 
+             (Array.isArray(scanResult) && scanResult.length > 0));
         
-        return () => clearTimeout(timer);
-    }, []);
-
-    // Redirect to market-breakouts if no scan data available (but not during initial load)
-    React.useEffect(() => {
-        if (!isInitialLoad && !isLoading && (!scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0)) {
+        if (!isLoading && !hasValidData) {
             router.push('/market-breakouts');
         }
-    }, [scanResult, router, isInitialLoad, isLoading]);
+    }, [scanResult, router, isLoading]);
 
-    // Show loading state during initial load or if no scan data (will redirect)
-    // if (isInitialLoad || isLoading || !scanResult || !Array.isArray(scanResult?.data) || scanResult.data.length === 0) {
-    //     return (
-    //         <div className="loading-container">
-    //             <div>Loading...</div>
-    //         </div>
-    //     );
-    // }
+    // Ensure loading state is false if we have data (but only if not currently loading from API)
+    React.useEffect(() => {
+        if (scanResult && Array.isArray(scanResult?.data) && scanResult.data.length > 0 && isLoading) {
+            // Only reset loading state if this data came from localStorage (not from a fresh API call)
+            // We can detect this by checking if the data was just updated (within last 2 seconds)
+            const now = new Date();
+            const scanTime = new Date(lastScanTime);
+            const timeDiff = now - scanTime;
+            
+            // If data is older than 2 seconds, it's from localStorage, so we can reset loading
+            if (timeDiff > 2000) {
+                setLoadingState(false);
+            }
+        }
+    }, [scanResult, isLoading, setLoadingState, lastScanTime]);
 
-
-    // Helper to format date
-    function formatDate(dateStr) {
-        if (!dateStr) return "-";
-        const d = new Date(dateStr);
-        return d.toLocaleString();
+    // Show loading state during initial load or when loading
+    if (isLoading || isCategoryLoading) {
+        return (
+            <div>
+                <PageHeader />
+                <div className="loading-container">
+                    <div className={`loading-spinner ${isDarkMode ? 'dark' : ''}`}>
+                        <img src="/assets/icons/loading-icon.svg" alt="Loading" className="spinner" />
+                        <div>Loading market data...</div>
+                    </div>
+                </div>
+            </div>
+        );
     }
+
+    // Don't redirect during render - this will be handled in useEffect
+    // If no data and not loading, show nothing (redirect will happen in useEffect)
+    if (!isLoading && !isCategoryLoading && (!scanResult || dataArray.length === 0)) {
+        return null;
+    }
+
 
     const formatPrice = (price) => {
     if (!price && price !== 0) return '-'
@@ -69,11 +89,6 @@ export default function MoveOpportunities() {
     }
   }
 
-  const getPercentageColor = (percentage) => {
-    if (percentage > 0) return 'text-green-600'
-    if (percentage < 0) return 'text-red-600'
-    return 'text-gray-600'
-  }
 
   const getPercentageIcon = (percentage) => {
     if (percentage > 0) return <img className='arrow-icon' src='/assets/icons/arrow-green.svg' alt='arrow-icon' />
@@ -108,7 +123,7 @@ const formatMarketCap = (marketCap) => {
                 <div className='moveOpportunities-welcome-line'>
                     <p>Last scan: {formatScanTime(lastScanTime)}</p>
 
-                    <h1 className={`${isDarkMode ? 'dark' : ''}`}>Top Explosive Move Opportunities</h1>
+                    <h1 className={`${isDarkMode ? 'dark' : ''}`}>{categoryHeading}</h1>
                 </div>
 
                                 <div className='moveOpportunities-details-alignment'>

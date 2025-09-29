@@ -5,8 +5,17 @@ const API_BASE_URL = 'https://crypto-scanner-backend-production.up.railway.app/a
 
 export async function GET(request, { params }) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
+    // Try to get token from Authorization header first
+    const authHeader = request.headers.get("authorization");
+    let token = null;
+    
+    if (authHeader?.startsWith("Bearer ")) {
+      token = authHeader.substring(7);
+    } else {
+      // Fallback to cookies
+      const cookieStore = await cookies();
+      token = cookieStore.get('auth_token')?.value;
+    }
 
     if (!token) {
       return NextResponse.json(

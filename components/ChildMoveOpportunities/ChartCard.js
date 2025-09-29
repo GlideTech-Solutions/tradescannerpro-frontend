@@ -1,46 +1,16 @@
-import {
-	ResponsiveContainer,
-	ComposedChart,
-	Area,
-	Bar,
-	XAxis,
-	YAxis,
-	CartesianGrid,
-	Tooltip,
-} from "recharts";
 import { useMemo } from "react";
 import PropTypes from "prop-types";
 import StatsRow from "./StatsRow";
+import CandlestickChart from "./CandlestickChart";
 import { useTheme } from "../../context/ThemeContext";
 
-const raw = [
-	{ date: "2024-08-01", price: 182.1, volume: 12.2 },
-	{ date: "2024-08-02", price: 189.3, volume: 10.5 },
-	{ date: "2024-08-03", price: 201.0, volume: 9.8 },
-	{ date: "2024-08-04", price: 194.5, volume: 11.9 },
-	{ date: "2024-08-05", price: 205.4, volume: 13.2 },
-	{ date: "2024-08-06", price: 197.2, volume: 8.7 },
-	{ date: "2024-08-07", price: 188.6, volume: 12.1 },
-	{ date: "2024-08-08", price: 208.3, volume: 15.2 },
-	{ date: "2024-08-09", price: 233.4, volume: 18.4 },
-	{ date: "2024-08-10", price: 231.0, volume: 17.9 },
-	{ date: "2024-08-11", price: 223.4, volume: 14.7 },
-	{ date: "2024-08-12", price: 207.2, volume: 16.1 },
-	{ date: "2024-08-13", price: 191.6, volume: 12.2 },
-	{ date: "2024-08-14", price: 204.5, volume: 10.9 },
-	{ date: "2024-08-15", price: 229.3, volume: 13.5 },
-	{ date: "2024-08-16", price: 221.5, volume: 9.9 },
-	{ date: "2024-08-17", price: 239.1, volume: 16.8 },
-	{ date: "2024-08-18", price: 232.6, volume: 14.3 },
-	{ date: "2024-08-19", price: 235.2, volume: 15.0 },
-];
 
 const timeframes = ["1H", "1D", "M", "3M", "6M", "Y"];
 
 // Helper functions for formatting
 const formatPrice = (price) => {
 	if (!price || price === 0) {
-		return `$${price.toFixed(5)}`;
+		return `$0.00000`;
 	} else if (price < 0.01) {
 		return `$${price.toFixed(6)}`;
 	} else if (price < 1) {
@@ -51,7 +21,9 @@ const formatPrice = (price) => {
 };
 
 const formatVolume = (volume) => {
-	if (volume >= 1e9) {
+	if (!volume || volume === 0) {
+		return `$0.00K`;
+	} else if (volume >= 1e9) {
 		return `$${(volume / 1e9).toFixed(2)}B`;
 	} else if (volume >= 1e6) {
 		return `$${(volume / 1e6).toFixed(2)}M`;
@@ -63,25 +35,59 @@ const formatVolume = (volume) => {
 export default function ChartCard({ coinData, coinHistory }) {
 	const { isDarkMode } = useTheme();
 
+	console.log("ChartCard props:");
+	console.log("- coinData:", coinData);
+	console.log("- coinHistory:", coinHistory);
+
 	// Transform the API data to chart format
 	const data = useMemo(() => {
-		if (!coinHistory?.data || !Array.isArray(coinHistory.data)) {
-			return raw; // fallback to static data
+		console.log("Transforming data in ChartCard...");
+		
+		// Handle different possible response structures
+		let historyData = null;
+		
+		// Check if data is directly in coinHistory
+		if (Array.isArray(coinHistory)) {
+			console.log("Data is directly in coinHistory");
+			historyData = coinHistory;
 		}
-
-		return coinHistory.data.map((item) => {
+		// Check if data is in coinHistory.data
+		else if (coinHistory?.data && Array.isArray(coinHistory.data)) {
+			console.log("Data is in coinHistory.data");
+			historyData = coinHistory.data;
+		}
+		// Check if data is in coinHistory.history
+		else if (coinHistory?.history && Array.isArray(coinHistory.history)) {
+			console.log("Data is in coinHistory.history");
+			historyData = coinHistory.history;
+		}
+		
+		console.log("Extracted historyData:", historyData);
+		console.log("HistoryData length:", historyData?.length);
+		
+		if (!historyData || historyData.length === 0) {
+			console.log("No valid history data found");
+			return []; // Return empty array if no data
+		}
+		
+		console.log("First history item:", historyData[0]);
+		
+		const transformedData = historyData.map((item) => {
 			return {
 				date: new Date(item.time).toISOString().split("T")[0],
-				price: item.close,
-				volume: item.volume / 1e6, // Convert to millions for display
-				volumeArea: item.volume / 1e6, // Same data for area chart
-				originalVolume: item.volume, // Keep original volume for tooltip
 				open: item.open,
 				high: item.high,
 				low: item.low,
+				close: item.close,
+				volume: item.volume,
 				time: item.time, // Keep original time for tooltip
 			};
 		});
+		
+		console.log("Transformed data:", transformedData);
+		console.log("Transformed data length:", transformedData.length);
+		
+		return transformedData;
 	}, [coinHistory]);
 
 	// Extract coin info from coinData or use defaults
@@ -89,27 +95,27 @@ export default function ChartCard({ coinData, coinHistory }) {
 	const coinName = coinData?.name || "Cryptocurrency";
 	const coinImage = coinData?.image;
 
-	console.log("coinData", coinData);
 
 	// Calculate additional statistics
 	const stats = useMemo(() => {
 		if (data.length === 0) return null;
 
-		const prices = data.map((d) => d.price);
+		const highs = data.map((d) => d.high);
+		const lows = data.map((d) => d.low);
 		const volumes = data.map((d) => d.volume);
 
-		const high = Math.max(...prices);
-		const low = Math.min(...prices);
+		const maxHigh = Math.max(...highs);
+		const minLow = Math.min(...lows);
 		const avgVolume = volumes.reduce((a, b) => a + b, 0) / volumes.length;
 		const totalVolume = volumes.reduce((a, b) => a + b, 0);
 
 		return {
-			high: formatPrice(high),
-			low: formatPrice(low),
-			avgVolume: formatVolume(avgVolume * 1e6),
-			totalVolume: formatVolume(totalVolume * 1e6),
-			priceRange: formatPrice(high - low),
-			volatility: (((high - low) / low) * 100).toFixed(2) + "%",
+			high: formatPrice(maxHigh),
+			low: formatPrice(minLow),
+			avgVolume: formatVolume(avgVolume),
+			totalVolume: formatVolume(totalVolume),
+			priceRange: formatPrice(maxHigh - minLow),
+			volatility: (((maxHigh - minLow) / minLow) * 100).toFixed(2) + "%",
 		};
 	}, [data]);
 
@@ -160,22 +166,10 @@ export default function ChartCard({ coinData, coinHistory }) {
 			<div className="toolbars">
 				<div className="pills">
 					{(() => {
-						// Get the latest data point (from coinHistory or fallback to raw)
+						// Get the latest data point
 						const latest = data[data.length - 1] || {};
-						// If coinHistory.data exists, try to get the original API object for more fields
-						let latestRaw = null;
-						if (
-							coinHistory?.data &&
-							Array.isArray(coinHistory.data) &&
-							coinHistory.data.length > 0
-						) {
-							latestRaw = coinHistory.data[coinHistory.data.length - 1];
-						}
-						// Use latestRaw for original fields if available, else fallback to transformed data
-						const close = latestRaw?.close ?? latest.price;
-						const high = latestRaw?.high ?? latest.high;
-						const low = latestRaw?.low ?? latest.low;
-						const open = latestRaw?.open ?? latest.open;
+						const { open, high, low, close } = latest;
+						
 						return (
 							<>
 								<span className="pill">
@@ -214,135 +208,22 @@ export default function ChartCard({ coinData, coinHistory }) {
 
 			{/* Chart */}
 			<div className="chartWrap">
-				<ResponsiveContainer width="100%" height={280}>
-					<ComposedChart
-						data={data}
-						margin={{ top: 20, right: 30, bottom: 20, left: 0 }}
+				{data.length > 0 ? (
+					<CandlestickChart data={data} isDarkMode={isDarkMode} />
+				) : (
+					<div 
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							height: '280px',
+							color: isDarkMode ? '#888' : '#666',
+							fontSize: '14px'
+						}}
 					>
-						<defs>
-							<linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
-								<stop offset="0%" stopColor="#4CAF50" stopOpacity={0.3} />
-								<stop offset="50%" stopColor="#4CAF50" stopOpacity={0.15} />
-								<stop offset="100%" stopColor="#4CAF50" stopOpacity={0} />
-							</linearGradient>
-						</defs>
-
-						<CartesianGrid
-							stroke={isDarkMode ? "#2a2a2a" : "#f0f0f0"}
-							strokeDasharray="1 1"
-							horizontal={true}
-							vertical={true}
-						/>
-						<XAxis
-							dataKey="date"
-							tick={{ fill: isDarkMode ? "#888" : "#666", fontSize: 11 }}
-							axisLine={false}
-							tickLine={false}
-							minTickGap={30}
-							padding={{ left: 10, right: 10 }}
-							tickFormatter={(d) => {
-								const date = new Date(d);
-								return date
-									.toLocaleDateString("en-US", {
-										month: "short",
-										day: "numeric",
-									})
-									.toUpperCase();
-							}}
-						/>
-						<YAxis
-							yAxisId="right"
-							orientation="right"
-							tick={{ fill: isDarkMode ? "#888" : "#666", fontSize: 11 }}
-							axisLine={false}
-							tickLine={false}
-							width={70}
-							tickFormatter={(v) => `${v.toFixed(1)}M`}
-							domain={[0, "dataMax * 1.1"]}
-						/>
-						<YAxis yAxisId="vol" hide domain={[0, "dataMax * 2"]} />
-
-						<Tooltip
-							cursor={{
-								stroke: isDarkMode ? "#4CAF50" : "#2AD69D",
-								strokeWidth: 1,
-								strokeOpacity: 0.7,
-							}}
-							contentStyle={{
-								background: isDarkMode ? "#1a1a1a" : "#ffffff",
-								border: `1px solid ${isDarkMode ? "#333" : "#e0e0e0"}`,
-								borderRadius: 8,
-								color: isDarkMode ? "#ffffff" : "#333333",
-								padding: "12px 16px",
-								boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-								fontSize: "13px",
-							}}
-							formatter={(value, name, props) => {
-								if (name === "volume" && props?.payload?.originalVolume) {
-									// Show original volume value (not converted to millions)
-									const originalVolume = props.payload.originalVolume;
-									return [`${originalVolume.toFixed(2)}`, "Volume"];
-								}
-								// Hide area chart volume to avoid duplication
-								if (name === "volumeArea") {
-									return null;
-								}
-								return null;
-							}}
-							labelFormatter={(label, payload) => {
-								// Use the original time from the data if available
-								if (payload?.[0]?.payload?.time) {
-									const d = new Date(payload[0].payload.time);
-									return d.toLocaleDateString("en-US", {
-										month: "short",
-										day: "numeric",
-										year: "numeric",
-										hour: "2-digit",
-										minute: "2-digit",
-										hour12: true,
-									});
-								}
-								// Fallback to label date
-								const d = new Date(label);
-								return d.toLocaleDateString("en-US", {
-									month: "short",
-									day: "numeric",
-									year: "numeric",
-									hour: "2-digit",
-									minute: "2-digit",
-									hour12: true,
-								});
-							}}
-						/>
-
-						{/* Volume bars - Single color */}
-						<Bar
-							yAxisId="vol"
-							dataKey="volume"
-							barSize={3}
-							radius={[1, 1, 0, 0]}
-							fill="#4CAF50"
-							opacity={0.8}
-						/>
-
-						{/* Volume area line */}
-						<Area
-							type="monotone"
-							dataKey="volumeArea"
-							stroke="#4CAF50"
-							strokeWidth={2}
-							fill="url(#areaFill)"
-							dot={false}
-							activeDot={{
-								r: 4,
-								stroke: "#4CAF50",
-								strokeWidth: 2,
-								fill: "#ffffff",
-							}}
-							yAxisId="right"
-						/>
-					</ComposedChart>
-				</ResponsiveContainer>
+						{coinHistory?.data ? 'No chart data available' : 'Loading chart data...'}
+					</div>
+				)}
 			</div>
 
 			{/* Stats row */}
