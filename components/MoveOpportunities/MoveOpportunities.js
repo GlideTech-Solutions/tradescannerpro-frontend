@@ -9,7 +9,7 @@ import apiClient from '../../lib/api-client';
 
 export default function MoveOpportunities() {
     const { isDarkMode } = useTheme();
-    const { lastScanTime, updateCategory } = useScan();
+    const { lastScanTime, updateCategory, scanResult } = useScan();
     const router = useRouter();
 
     // Tab state
@@ -19,111 +19,81 @@ export default function MoveOpportunities() {
         strong_bullish: null,
         strong_bearish: null
     });
-    const [tabLoading, setTabLoading] = useState({
-        neutral: false,
-        strong_bullish: false,
-        strong_bearish: false
-    });
 
     // Get the data array, handling different data structures
     const dataArray = tabData[activeTab]?.data || (Array.isArray(tabData[activeTab]) ? tabData[activeTab] : []);
 
-    // API call functions for each tab
-    const fetchTabData = async (category) => {
-        try {
-            setTabLoading(prev => ({ ...prev, [category]: true }));
+    // Process scan data from context or localStorage
+    const processScanData = (scanData, category) => {
+        if (scanData && scanData.data && Array.isArray(scanData.data)) {
+            const filteredCoins = scanData.data.filter((coin) => {
+                const coinStrength = coin.strength;
+                switch (category) {
+                    case 'neutral':
+                        return coinStrength === 'Neutral';
+                    case 'strong_bullish':
+                        return coinStrength === 'Bullish' || coinStrength === 'Strong Bullish';
+                    case 'strong_bearish':
+                        return coinStrength === 'Bearish' || coinStrength === 'Strong Bearish';
+                    default:
+                        return true;
+                }
+            });
             
-            // Get all scan data
-            const response = await apiClient.getScanData();
-            
-            // Filter data based on category
-            let filteredData = response;
-            if (response && response.data && Array.isArray(response.data)) {
-                const filteredCoins = response.data.filter((coin) => {
-                    const coinStrength = coin.strength;
-                    
-                    switch (category) {
-                        case 'neutral':
-                            return coinStrength === 'Neutral';
-                        case 'strong_bullish':
-                            return coinStrength === 'Bullish' || coinStrength === 'Strong Bullish';
-                        case 'strong_bearish':
-                            return coinStrength === 'Bearish' || coinStrength === 'Strong Bearish';
-                        default:
-                            return true;
-                    }
-                });
-                
-                filteredData = {
-                    ...response,
-                    data: filteredCoins
-                };
-            }
+            const filteredData = {
+                ...scanData,
+                data: filteredCoins
+            };
 
-            // Update tab data
             setTabData(prev => ({ ...prev, [category]: filteredData }));
-            
-            // Update category in context
             updateCategory(category);
-            
-        } catch (error) {
-            console.error(`Error fetching ${category} data:`, error);
-        } finally {
-            setTabLoading(prev => ({ ...prev, [category]: false }));
         }
     };
+
+    const handleScan = () => {
+		
+		// Redirect to market-breakouts page with scan trigger parameter
+		router.push("/market-breakouts?autoScan=true");
+	};
+
 
     // Handle tab change
     const handleTabChange = (category) => {
         setActiveTab(category);
         
-        // Fetch data if not already loaded
-        if (!tabData[category]) {
-            fetchTabData(category);
-        } else {
-            // Update category in context even if data is already loaded
-            updateCategory(category);
+      
+        
+        const storedData = localStorage.getItem('scan_result');
+        if (storedData) {
+            try {
+                const parsedData = JSON.parse(storedData);
+                processScanData(parsedData, category);
+            } catch (error) {
+                // Let UI show "Data not found" message
+            }
+        } else if (scanResult && scanResult.data && Array.isArray(scanResult.data)) {
+            processScanData(scanResult, category);
         }
+        // If no data, UI will show "Data not found" message
     };
 
-    // Load initial data
     useEffect(() => {
-        fetchTabData(activeTab);
-    }, []);
-
-    // Redirect to market-breakouts if no scan data available (but not during initial load or loading)
-    React.useEffect(() => {
-        // Check if we have valid data without depending on dataArray
-        const hasValidData = tabData[activeTab] && 
-            ((Array.isArray(tabData[activeTab]?.data) && tabData[activeTab].data.length > 0) || 
-             (Array.isArray(tabData[activeTab]) && tabData[activeTab].length > 0));
-        
-        if (!tabLoading[activeTab] && !hasValidData && tabData[activeTab] !== null) {
-            router.push('/market-breakouts');
+     
+        const storedData = localStorage.getItem('scan_result');
+        if (storedData) {
+            try {
+                const parsedData = JSON.parse(storedData);
+                processScanData(parsedData, activeTab);
+            } catch (error) {
+                // Let UI show "Data not found" message
+            }
+        } else if (scanResult && scanResult.data && Array.isArray(scanResult.data)) {
+            processScanData(scanResult, activeTab);
         }
-    }, [tabData, activeTab, tabLoading, router]);
+        // If no data, UI will show "Data not found" message
+    }, [scanResult, activeTab, router]);
 
-    // Show loading state during initial load or when loading
-    if (tabLoading[activeTab]) {
-        return (
-            <div>
-                <PageHeader />
-                <div className="loading-container">
-                    <div className={`loading-spinner ${isDarkMode ? 'dark' : ''}`}>
-                        <img src="/assets/icons/loading-icon.svg" alt="Loading" className="spinner" />
-                        <div>Loading market data...</div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Don't redirect during render - this will be handled in useEffect
-    // If no data and not loading, show nothing (redirect will happen in useEffect)
-    if (!tabLoading[activeTab] && (!tabData[activeTab] || dataArray.length === 0)) {
-        return null;
-    }
-
+   
 
     const formatPrice = (price) => {
     if (!price && price !== 0) return '-'
@@ -217,7 +187,7 @@ const formatMarketCap = (marketCap) => {
 
                                 <div className='moveOpportunities-details-alignment'>
                                         <div className='moveOpportunities-grid-alignment'>
-                                                {Array.isArray(dataArray) && dataArray.map((coin, idx) => (
+                                                {Array.isArray(dataArray) && dataArray.length > 0 ? dataArray.map((coin, idx) => (
                                                     <div className={`moveOpportunities-grid-item-alignment ${isDarkMode ? 'dark' : ''}`} key={coin.id || idx}>
                                                         <div className='moveOpportunities-top-heading'>
                                                             <div className='moveOpportunoties-left-side-alignment'>
@@ -384,7 +354,101 @@ const formatMarketCap = (marketCap) => {
                                 </button>
                             </div>
                                                     </div>
-                                                ))}
+                                                )) : (
+                                                    <div className="no-data-message" style={{
+                                                        textAlign: 'center',
+                                                        padding: '60px 20px',
+                                                        width: '100%',
+                                                        gridColumn: '1 / -1',
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        minHeight: '300px'
+                                                    }}>
+                                                        <div style={{
+                                                            background: isDarkMode 
+                                                                ? 'linear-gradient(135deg, #2d3748 0%, #4a5568 100%)' 
+                                                                : 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)',
+                                                            padding: '40px',
+                                                            borderRadius: '20px',
+                                                            border: `2px solid ${isDarkMode ? '#4a5568' : '#e2e8f0'}`,
+                                                            maxWidth: '500px',
+                                                            width: '100%',
+                                                            boxShadow: isDarkMode 
+                                                                ? '0 10px 25px rgba(0, 0, 0, 0.3)' 
+                                                                : '0 10px 25px rgba(0, 0, 0, 0.1)',
+                                                            position: 'relative',
+                                                            overflow: 'hidden'
+                                                        }}>
+                                                            {/* Background decoration */}
+                                                            <div style={{
+                                                                position: 'absolute',
+                                                                top: '-50px',
+                                                                right: '-50px',
+                                                                width: '100px',
+                                                                height: '100px',
+                                                                background: isDarkMode ? '#4a5568' : '#e2e8f0',
+                                                                borderRadius: '50%',
+                                                                opacity: 0.1
+                                                            }}></div>
+                                                            <div style={{
+                                                                position: 'absolute',
+                                                                bottom: '-30px',
+                                                                left: '-30px',
+                                                                width: '60px',
+                                                                height: '60px',
+                                                                background: isDarkMode ? '#2d3748' : '#f7fafc',
+                                                                borderRadius: '50%',
+                                                                opacity: 0.1
+                                                            }}></div>
+                                                            
+                                                            {/* Main content */}
+                                                            <div style={{ position: 'relative', zIndex: 1 }}>
+                                                                <div style={{
+                                                                    fontSize: '64px',
+                                                                    marginBottom: '24px',
+                                                                    background: isDarkMode 
+                                                                        ? 'linear-gradient(45deg, #667eea, #764ba2)' 
+                                                                        : 'linear-gradient(45deg, #667eea, #764ba2)',
+                                                                    WebkitBackgroundClip: 'text',
+                                                                    WebkitTextFillColor: 'transparent',
+                                                                    backgroundClip: 'text',
+                                                                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+                                                                }}>
+                                                                    🔍
+                                                                </div>
+                                                                <h2 style={{
+                                                                    color: isDarkMode ? '#e2e8f0' : '#2d3748',
+                                                                    marginBottom: '16px',
+                                                                    fontSize: '28px',
+                                                                    fontWeight: '700',
+                                                                    letterSpacing: '-0.5px'
+                                                                }}>
+                                                                    No Data Available
+                                                                </h2>
+                                                                <p style={{
+                                                                    color: isDarkMode ? '#a0aec0' : '#718096',
+                                                                    marginBottom: '32px',
+                                                                    fontSize: '18px',
+                                                                    lineHeight: '1.6',
+                                                                    maxWidth: '400px',
+                                                                    margin: '0 auto 32px auto'
+                                                                }}>
+                                                                    We couldn't find any market data for this category. 
+                                                                    <br />
+                                                                    <strong>Run a fresh scan</strong> to discover the latest opportunities!
+                                                                </p>
+                                                              
+                                                                <div className="headerrun-button-alignment desktop-scan-button">
+								<button onClick={handleScan}>
+									<img src="/assets/icons/bit-icon.svg" alt="bit icon" />
+									<span>Run Scan</span>
+								</button>
+							</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
 
                       
                     </div>
