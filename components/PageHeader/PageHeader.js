@@ -252,13 +252,13 @@ export default function PageHeader() {
 
 							{/* Mobile Run Scan Button */}
 							<div className="headerrun-button-alignment mobile-scan-button">
-								<button
+								<div
 									onClick={handleScan}
 									className="scan-button-mobile"
 									aria-label="Run Scan"
 								>
 									<img src="/assets/icons/button.svg" alt="scan icon" />
-								</button>
+								</div>
 							</div>
 						</>
 					)}

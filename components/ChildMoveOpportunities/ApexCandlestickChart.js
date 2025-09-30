@@ -204,6 +204,11 @@ const createTooltipHTML = (data, isDarkMode, isMobile) => {
 	const [open, high, low, close] = data.y;
 	const volume = data.volume || 0;
 	
+	// Validate all values are present
+	if (open === undefined || high === undefined || low === undefined || close === undefined) {
+		return '';
+	}
+	
 	const change = close - open;
 	const changePercent = open > 0 ? ((change / open) * 100).toFixed(2) : '0.00';
 	const isBullish = change >= 0;
@@ -228,50 +233,54 @@ const createTooltipHTML = (data, isDarkMode, isMobile) => {
 			background: ${isDarkMode ? '#1a1a1a' : '#ffffff'};
 			border: 1px solid ${isDarkMode ? '#333' : '#e0e0e0'};
 			border-radius: 8px;
-			padding: ${isMobile ? '8px 12px' : '12px 16px'};
+			padding: ${isMobile ? '12px 16px' : '16px 20px'};
 			box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-			font-size: ${isMobile ? '11px' : '13px'};
+			font-size: ${isMobile ? '11px' : '12px'};
 			color: ${isDarkMode ? '#ffffff' : '#333333'};
-			max-width: ${isMobile ? '280px' : '320px'};
+			width: ${isMobile ? '260px' : '300px'};
 			z-index: 1000;
+			white-space: nowrap;
+			overflow: visible;
 		">
 			<div style="
-				margin-bottom: ${isMobile ? '6px' : '8px'};
+				margin-bottom: ${isMobile ? '8px' : '10px'};
 				font-weight: bold;
-				font-size: ${isMobile ? '12px' : '13px'};
+				font-size: ${isMobile ? '13px' : '14px'};
+				color: ${isDarkMode ? '#ffffff' : '#1f2937'};
 			">
 				${formattedTime}
 			</div>
 			<div style="
-				display: grid;
-				grid-template-columns: ${isMobile ? '1fr' : '1fr 1fr'};
-				gap: ${isMobile ? '6px' : '4px'};
+				display: flex;
+				flex-direction: column;
+				gap: ${isMobile ? '4px' : '6px'};
 			">
-				<div style="display: flex; justify-content: space-between;">
-					<span style="color: ${isDarkMode ? '#888' : '#666'};">Open:</span>
-					<span style="font-weight: bold;">${formattedOpen}</span>
+				<div style="display: flex; justify-content: space-between; align-items: center; min-width: 0;">
+					<span style="color: ${isDarkMode ? '#9ca3af' : '#6b7280'}; font-size: ${isMobile ? '11px' : '12px'}; min-width: 40px;">Open:</span>
+					<span style="font-weight: bold; color: ${isDarkMode ? '#ffffff' : '#1f2937'}; font-size: ${isMobile ? '12px' : '13px'};">${formattedOpen}</span>
 				</div>
-				<div style="display: flex; justify-content: space-between;">
-					<span style="color: ${isDarkMode ? '#888' : '#666'};">High:</span>
-					<span style="font-weight: bold;">${formattedHigh}</span>
+				<div style="display: flex; justify-content: space-between; align-items: center; min-width: 0;">
+					<span style="color: ${isDarkMode ? '#9ca3af' : '#6b7280'}; font-size: ${isMobile ? '11px' : '12px'}; min-width: 40px;">High:</span>
+					<span style="font-weight: bold; color: ${isDarkMode ? '#ffffff' : '#1f2937'}; font-size: ${isMobile ? '12px' : '13px'};">${formattedHigh}</span>
 				</div>
-				<div style="display: flex; justify-content: space-between;">
-					<span style="color: ${isDarkMode ? '#888' : '#666'};">Low:</span>
-					<span style="font-weight: bold;">${formattedLow}</span>
+				<div style="display: flex; justify-content: space-between; align-items: center; min-width: 0;">
+					<span style="color: ${isDarkMode ? '#9ca3af' : '#6b7280'}; font-size: ${isMobile ? '11px' : '12px'}; min-width: 40px;">Low:</span>
+					<span style="font-weight: bold; color: ${isDarkMode ? '#ffffff' : '#1f2937'}; font-size: ${isMobile ? '12px' : '13px'};">${formattedLow}</span>
 				</div>
-				<div style="display: flex; justify-content: space-between;">
-					<span style="color: ${isDarkMode ? '#888' : '#666'};">Close:</span>
-					<span style="font-weight: bold;">${formattedClose}</span>
+				<div style="display: flex; justify-content: space-between; align-items: center; min-width: 0;">
+					<span style="color: ${isDarkMode ? '#9ca3af' : '#6b7280'}; font-size: ${isMobile ? '11px' : '12px'}; min-width: 40px;">Close:</span>
+					<span style="font-weight: bold; color: ${isDarkMode ? '#ffffff' : '#1f2937'}; font-size: ${isMobile ? '12px' : '13px'};">${formattedClose}</span>
 				</div>
-				<div style="display: flex; justify-content: space-between;">
-					<span style="color: ${isDarkMode ? '#888' : '#666'};">Volume:</span>
-					<span style="font-weight: bold;">${formattedVolume}</span>
+				<div style="display: flex; justify-content: space-between; align-items: center; min-width: 0;">
+					<span style="color: ${isDarkMode ? '#9ca3af' : '#6b7280'}; font-size: ${isMobile ? '11px' : '12px'}; min-width: 40px;">Volume:</span>
+					<span style="font-weight: bold; color: ${isDarkMode ? '#ffffff' : '#1f2937'}; font-size: ${isMobile ? '12px' : '13px'};">${formattedVolume}</span>
 				</div>
-				<div style="display: flex; justify-content: space-between;">
-					<span style="color: ${isDarkMode ? '#888' : '#666'};">Change:</span>
+				<div style="display: flex; justify-content: space-between; align-items: center; min-width: 0;">
+					<span style="color: ${isDarkMode ? '#9ca3af' : '#6b7280'}; font-size: ${isMobile ? '11px' : '12px'}; min-width: 40px;">Change:</span>
 					<span style="
 						font-weight: bold;
-						color: ${isBullish ? '#4CAF50' : '#F44336'};
+						color: ${isBullish ? '#10b981' : '#ef4444'};
+						font-size: ${isMobile ? '12px' : '13px'};
 					">
 						${change >= 0 ? '+' : ''}${formatPrice(change)} (${changePercent}%)
 					</span>
@@ -285,7 +294,13 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 	const { isMobile, isTablet } = useResponsive();
 	const [isClient, setIsClient] = useState(false);
 
-	const { series } = processData(data);
+	const { series: processedSeries } = processData(data);
+	
+	// Format series for ApexCharts candlestick
+	const series = [{
+		name: 'Price',
+		data: processedSeries
+	}];
 
 	// Debug: Log the processed series data
 
@@ -337,6 +352,9 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				enabled: true,
 				type: 'x',
 				autoScaleYaxis: true,
+			},
+			sparkline: {
+				enabled: false
 			},
 			pan: {
 				enabled: false
@@ -444,6 +462,32 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 			shared: false,
 			intersect: false,
 			followCursor: true,
+			position: function(dataPoint, dataPointIndex, dataPointSeriesIndex, w) {
+				// Position tooltip to avoid going off-screen
+				const tooltipWidth = isMobile ? 280 : 320;
+				const tooltipHeight = isMobile ? 180 : 220;
+				const chartWidth = w.globals.svgWidth;
+				const chartHeight = w.globals.svgHeight;
+				
+				let x = dataPoint.x;
+				let y = dataPoint.y;
+				
+				// Adjust X position if tooltip would go off right edge
+				if (x + tooltipWidth > chartWidth) {
+					x = chartWidth - tooltipWidth - 10;
+				}
+				
+				// Adjust Y position if tooltip would go off bottom edge
+				if (y + tooltipHeight > chartHeight) {
+					y = chartHeight - tooltipHeight - 10;
+				}
+				
+				// Ensure tooltip doesn't go off left or top edges
+				x = Math.max(10, x);
+				y = Math.max(10, y);
+				
+				return { x, y };
+			},
 		custom: function({ series, seriesIndex, dataPointIndex, w }) {
 			// Try multiple ways to get the data
 			let open, high, low, close, volume, timestamp;
@@ -559,14 +603,25 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				},
 				wick: {
 					useFillColor: true
+				},
+				dataLabels: {
+					enabled: false
 				}
 			}
+		},
+		stroke: {
+			show: true,
+			curve: 'straight',
+			lineCap: 'butt',
+			colors: undefined,
+			width: 2,
+			dashArray: 0
 		},
 		responsive: [{
 			breakpoint: 480,
 			options: {
 				chart: {
-					height: 250,
+					height: 280,
 					toolbar: {
 						show: true,
 						tools: {
@@ -585,28 +640,31 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						rotate: -45,
 						rotateAlways: true,
 						style: {
-							fontSize: '10px',
+							fontSize: '9px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
-						format: 'MMM dd'
+						format: 'MMM dd',
+						maxHeight: 40
 					}
 				},
 				yaxis: {
 					labels: {
 						style: {
-							fontSize: '10px',
+							fontSize: '9px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
-						formatter: (value) => formatYAxisLabel(value)
-					}
+						formatter: (value) => formatYAxisLabel(value),
+						maxWidth: 50
+					},
+					tickAmount: 4
 				},
 				grid: {
 					borderColor: isDarkMode ? '#374151' : '#E5E7EB',
 					padding: {
 						top: 10,
-						right: 10,
-						bottom: 60,
-						left: 40
+						right: 5,
+						bottom: 70,
+						left: 35
 					}
 				}
 			}
@@ -614,7 +672,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 			breakpoint: 768,
 			options: {
 				chart: {
-					height: 300,
+					height: 350,
 					toolbar: {
 						show: true,
 						tools: {
@@ -633,6 +691,57 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						rotate: -30,
 						rotateAlways: true,
 						style: {
+							fontSize: '10px',
+							color: isDarkMode ? '#B0B0B0' : '#374151'
+						},
+						format: 'MMM dd',
+						maxHeight: 50
+					}
+				},
+				yaxis: {
+					labels: {
+						style: {
+							fontSize: '10px',
+							color: isDarkMode ? '#B0B0B0' : '#374151'
+						},
+						formatter: (value) => formatYAxisLabel(value),
+						maxWidth: 60
+					},
+					tickAmount: 5
+				},
+				grid: {
+					borderColor: isDarkMode ? '#374151' : '#E5E7EB',
+					padding: {
+						top: 10,
+						right: 10,
+						bottom: 60,
+						left: 45
+					}
+				}
+			}
+		}, {
+			breakpoint: 1024,
+			options: {
+				chart: {
+					height: 400,
+					toolbar: {
+						show: true,
+						tools: {
+							download: false,
+							selection: false,
+							zoom: true,
+							zoomin: true,
+							zoomout: true,
+							pan: false,
+							reset: true
+						}
+					}
+				},
+				xaxis: {
+					labels: {
+						rotate: 0,
+						rotateAlways: false,
+						style: {
 							fontSize: '11px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
@@ -646,15 +755,16 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
 						formatter: (value) => formatYAxisLabel(value)
-					}
+					},
+					tickAmount: 6
 				},
 				grid: {
 					borderColor: isDarkMode ? '#374151' : '#E5E7EB',
 					padding: {
 						top: 10,
-						right: 10,
-						bottom: 50,
-						left: 45
+						right: 15,
+						bottom: 40,
+						left: 50
 					}
 				}
 			}
@@ -667,11 +777,12 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 			background: 'transparent',
 			borderRadius: '8px',
 			overflow: 'hidden',
-			position: 'relative'
+			position: 'relative',
+			minHeight: '300px'
 		}}>
 			<Chart
 				options={options}
-				series={options.series}
+				series={series}
 				type="candlestick"
 				height={options.chart.height}
 				width="100%"
