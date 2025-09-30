@@ -188,6 +188,7 @@
   font-size: 1.125rem;
   font-weight: 600;
   margin: 0;
+  text-align: start !important;
   letter-spacing: -0.025em;
 }
 
@@ -362,7 +363,7 @@
     .footer-container {
       grid-template-columns: 1fr;
       gap: 2rem;
-      text-align: center;
+      text-align: start;
     }
   }
   

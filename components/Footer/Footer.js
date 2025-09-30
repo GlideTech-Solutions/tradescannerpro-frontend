@@ -53,9 +53,9 @@ const Footer = () => {
             <h3 className="section-title">Quick Links</h3>
             <ul className="links-list">
               <li><a href="/" className="footer-link">Dashboard</a></li>
-              <li><a href="/move-opportunities" className="footer-link">Top Bullish Picks</a></li>
-              <li><a href="/child-move-opportunities" className="footer-link">Top Bearish Picks</a></li>
-              <li><a href="/setting" className="footer-link">Settings</a></li>
+              {/* <li><a href="/move-opportunities" className="footer-link">Top Bullish Picks</a></li>
+              <li><a href="/child-move-opportunities" className="footer-link">Top Bearish Picks</a></li> */}
+              {/* <li><a href="/setting" className="footer-link">Settings</a></li> */}
             </ul>
           </div>
 
