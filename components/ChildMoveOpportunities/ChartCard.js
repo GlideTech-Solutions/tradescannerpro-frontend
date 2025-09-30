@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import PropTypes from "prop-types";
 import StatsRow from "./StatsRow";
-import CandlestickChart from "./CandlestickChart";
+import ApexCandlestickChart from "./ApexCandlestickChart";
 import { useTheme } from "../../context/ThemeContext";
 
 
@@ -209,7 +209,7 @@ export default function ChartCard({ coinData, coinHistory }) {
 			{/* Chart */}
 			<div className="chartWrap">
 				{data.length > 0 ? (
-					<CandlestickChart data={data} isDarkMode={isDarkMode} />
+					<ApexCandlestickChart data={data} isDarkMode={isDarkMode} />
 				) : (
 					<div 
 						style={{
