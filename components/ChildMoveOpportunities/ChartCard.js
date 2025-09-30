@@ -1,12 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import StatsRow from "./StatsRow";
 import ApexCandlestickChart from "./ApexCandlestickChart";
 import { useTheme } from "../../context/ThemeContext";
+import clsx from "clsx";
 
-
-const timeframes = ["1H", "1D", "M", "3M", "6M", "Y"];
-
+const timeframes = ["1D", "7D", "1M", "3M", "1Y"];
 // Helper functions for formatting
 const formatPrice = (price) => {
 	if (!price || price === 0) {
@@ -34,6 +33,7 @@ const formatVolume = (volume) => {
 
 export default function ChartCard({ coinData, coinHistory }) {
 	const { isDarkMode } = useTheme();
+	const [selectedTimeframe, setSelectedTimeframe] = useState('7D');
 
 	console.log("ChartCard props:");
 	console.log("- coinData:", coinData);
@@ -72,23 +72,101 @@ export default function ChartCard({ coinData, coinHistory }) {
 		
 		console.log("First history item:", historyData[0]);
 		
-		const transformedData = historyData.map((item) => {
-			return {
-				date: new Date(item.time).toISOString().split("T")[0],
-				open: item.open,
-				high: item.high,
-				low: item.low,
-				close: item.close,
-				volume: item.volume,
-				time: item.time, // Keep original time for tooltip
+		const transformedData = historyData.map((item, index) => {
+			// Debug: Log the raw item data
+			console.log(`ChartCard processing item ${index}:`, item);
+			
+			// Ensure we have valid numeric values
+			const open = parseFloat(item.open);
+			const high = parseFloat(item.high);
+			const low = parseFloat(item.low);
+			const close = parseFloat(item.close);
+			const volume = parseFloat(item.volume) || 0;
+			
+			// Debug: Log parsed values
+			console.log(`ChartCard parsed values - Open: ${open}, High: ${high}, Low: ${low}, Close: ${close}`);
+			
+			// Check if all values are the same (which would be unusual for real market data)
+			if (open === high && high === low && low === close) {
+				console.warn(`ChartCard: All OHLC values are identical at index ${index}:`, { open, high, low, close });
+			}
+			
+			// Validate data integrity
+			if (isNaN(open) || isNaN(high) || isNaN(low) || isNaN(close)) {
+				console.warn(`Invalid data at index ${index}:`, item);
+				return null;
+			}
+			
+			// Don't force high/low validation - use original values
+			// This was causing all values to be the same
+			const finalOpen = open;
+			const finalHigh = high;
+			const finalLow = low;
+			const finalClose = close;
+			
+			// Ensure we have a valid time
+			let time;
+			if (item.time) {
+				time = item.time;
+			} else if (item.timestamp) {
+				time = item.timestamp;
+			} else {
+				time = new Date().toISOString();
+			}
+			
+			const result = {
+				time: time,
+				open: finalOpen,
+				high: finalHigh,
+				low: finalLow,
+				close: finalClose,
+				volume: volume
 			};
-		});
+			
+			// Debug: Log final result
+			console.log(`ChartCard final result for item ${index}:`, result);
+			
+			return result;
+		}).filter(item => item !== null);
 		
 		console.log("Transformed data:", transformedData);
 		console.log("Transformed data length:", transformedData.length);
 		
 		return transformedData;
 	}, [coinHistory]);
+
+	// Filter data based on selected timeframe
+	const filteredData = useMemo(() => {
+		if (!data || data.length === 0) return [];
+		
+		const now = new Date();
+		let cutoffDate;
+		
+		switch (selectedTimeframe) {
+			case '1D':
+				cutoffDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+				break;
+			case '7D':
+				cutoffDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+				break;
+			case '1M':
+				cutoffDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+				break;
+			case '3M':
+				cutoffDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+				break;
+			case '1Y':
+				cutoffDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+				break;
+			default:
+				cutoffDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+		}
+		
+		return data.filter(item => {
+			const itemDate = new Date(item.time);
+			return itemDate >= cutoffDate;
+		});
+	}, [data, selectedTimeframe]);
 
 	// Extract coin info from coinData or use defaults
 	const coinSymbol = coinData?.symbol?.toUpperCase() || "COIN";
@@ -100,9 +178,10 @@ export default function ChartCard({ coinData, coinHistory }) {
 	const stats = useMemo(() => {
 		if (data.length === 0) return null;
 
-		const highs = data.map((d) => d.high);
-		const lows = data.map((d) => d.low);
-		const volumes = data.map((d) => d.volume);
+		// data format: [timestamp, open, high, low, close, volume]
+		const highs = data.map((d) => d[2]); // high is at index 2
+		const lows = data.map((d) => d[3]);  // low is at index 3
+		const volumes = data.map((d) => d[5]); // volume is at index 5
 
 		const maxHigh = Math.max(...highs);
 		const minLow = Math.min(...lows);
@@ -166,9 +245,21 @@ export default function ChartCard({ coinData, coinHistory }) {
 			<div className="toolbars">
 				<div className="pills">
 					{(() => {
-						// Get the latest data point
-						const latest = data[data.length - 1] || {};
-						const { open, high, low, close } = latest;
+						// Get the latest data point from filtered data
+						// data format: {time, open, high, low, close, volume}
+						const latest = filteredData[filteredData.length - 1] || {};
+						const open = latest.open;
+						const high = latest.high;
+						const low = latest.low;
+						const close = latest.close;
+						
+						// Debug: Log chips data
+						console.log('=== CHIPS DEBUG ===');
+						console.log('Latest data point:', latest);
+						console.log('OHLC values - Open:', open, 'High:', high, 'Low:', low, 'Close:', close);
+						console.log('Filtered data length:', filteredData.length);
+						console.log('Selected timeframe:', selectedTimeframe);
+						console.log('=== END CHIPS DEBUG ===');
 						
 						return (
 							<>
@@ -193,23 +284,23 @@ export default function ChartCard({ coinData, coinHistory }) {
 					})()}
 				</div>
 
-				{/* <div className="tabs">
+				<div className="tabs">
           {timeframes.map((t) => (
             <button
               key={t}
-              className={clsx("tab", t === tf && "tabActive")}
-              onClick={() => setTF(t)}
+              className={clsx("tab", t === selectedTimeframe && "tabActive")}
+              onClick={() => setSelectedTimeframe(t)}
             >
               {t}
             </button>
           ))}
-        </div> */}
+        </div>
 			</div>
 
 			{/* Chart */}
 			<div className="chartWrap">
-				{data.length > 0 ? (
-					<ApexCandlestickChart data={data} isDarkMode={isDarkMode} />
+				{filteredData.length > 0 ? (
+					<ApexCandlestickChart data={filteredData} isDarkMode={isDarkMode} />
 				) : (
 					<div 
 						style={{
