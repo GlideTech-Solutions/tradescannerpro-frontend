@@ -129,7 +129,7 @@ export default function ChildMoveOpportunities() {
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
           >
             <img src="/assets/icons/arrow-small-left.svg" alt="left arrow" />
-            <span>Back to Top Explosive</span>
+            <span>Back</span>
           </button>
 
         

@@ -73,7 +73,6 @@
         }
 
         h1 {
-            
             font-weight: 400;
             font-size: 32px;
             line-height: 130%;
@@ -81,6 +80,7 @@
             text-align: center;
             color: $black-1;
             margin: 8px 0 0 0;
+            transition: color 0.3s ease;
 
             @media (max-width : "767px") {
                 font-size: 24px;
@@ -89,7 +89,6 @@
             &.dark {
                 color: $white-1;
             }
-
         }
 
 
@@ -184,6 +183,7 @@
                 background: linear-gradient(180deg, #F4F5FF 0%, #E1E2F3 100%);
                 padding: 30px;
                 border-radius: 30px;
+                transition: all 0.3s ease;
 
                 @media (max-width : "767px") {
                     padding: 16px;
@@ -192,7 +192,6 @@
                 &.dark {
                     border: 1.5px solid #8BB9FF4D;
                     background: #0E263A;
-
                 }
 
                 .moveOpportunities-top-heading {
@@ -493,7 +492,8 @@
         }
 
         img {
-            // filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+          width: 20px;
+          height: 20px;
         }
     }
 

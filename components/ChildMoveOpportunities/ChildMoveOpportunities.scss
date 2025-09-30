@@ -13,17 +13,16 @@
       cursor: pointer;
 
       span {
-        
         font-weight: 400;
         font-size: 16px;
         line-height: 100%;
         letter-spacing: -2%;
         color: #8085FF;
+        transition: color 0.3s ease;
 
         &.dark {
           color: #8BB9FF;
         }
-
       }
     }
 
@@ -31,19 +30,20 @@
     .coin-info-section {
       margin: 20px 0;
       
-      .coin-info-card {
-        background: #FFFFFFB2;
-        border-radius: 15px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border: 1.5px solid #C8C8E3;
-        
-        &.dark {
-          background: #0E263A;
-          border: 1.5px solid #8BB9FF4D;
-        }
+        .coin-info-card {
+          background: #FFFFFFB2;
+          border-radius: 15px;
+          padding: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border: 1.5px solid #C8C8E3;
+          transition: all 0.3s ease;
+          
+          &.dark {
+            background: #0E263A;
+            border: 1.5px solid #8BB9FF4D;
+          }
 
         .coin-info-left {
           display: flex;
@@ -103,24 +103,6 @@
           }
         }
         
-        // Dark mode styles
-        &.dark {
-          .coin-info-left .coin-details {
-            .coin-symbol {
-              color: #FFFFFF;
-            }
-            
-            .coin-name {
-              color: rgba(255, 255, 255, 0.7);
-            }
-          }
-          
-          .coin-info-right {
-            .coin-price {
-              color: #FFFFFF;
-            }
-          }
-        }
       }
     }
 
@@ -230,7 +212,9 @@
         }
       }
 
-      .moveOpportunities-child-chart-alignment {}
+      .moveOpportunities-child-chart-alignment {
+        // Chart alignment styles
+      }
 
       .moveOpportunities-child-bottom-alignment {
         margin: 30px 0 0 0;
@@ -329,12 +313,9 @@ background: rgba(14, 38, 58, 1);
 
 }
 .cards-light{
-  background: linear-gradient(180deg, #F4F5FF 0%, #E1E2F3 100%);;
+  background: linear-gradient(180deg, #F4F5FF 0%, #E1E2F3 100%);
 }
 .cards {
-  // background: radial-gradient(120% 120% at 0% 0%, #0a2133 0%, #0a1622 50%, #0a1520 100%);
-  // border: 1px solid #14334a;
-  // box-shadow: 0 0 0 1px rgba(20, 51, 74, 0.25) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
   border: 1.5px solid #C8C8E3;
   
 

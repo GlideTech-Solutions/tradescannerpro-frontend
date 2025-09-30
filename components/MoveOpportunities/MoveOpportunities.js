@@ -13,7 +13,7 @@ export default function MoveOpportunities() {
     const router = useRouter();
 
     // Tab state
-    const [activeTab, setActiveTab] = useState('neutral');
+    const [activeTab, setActiveTab] = useState('strong_bullish');
     const [tabData, setTabData] = useState({
         neutral: null,
         strong_bullish: null,
@@ -173,7 +173,7 @@ const formatMarketCap = (marketCap) => {
                 {/* Tab Navigation */}
                 <div className='tabs-container'>
                     <div className='tabs-wrapper'>
-                        {['neutral', 'strong_bullish', 'strong_bearish'].map((category) => (
+                        {['strong_bullish', 'neutral', 'strong_bearish'].map((category) => (
                             <button
                                 key={category}
                                 className={`tab-button ${activeTab === category ? 'active' : ''} ${isDarkMode ? 'dark' : ''}`}

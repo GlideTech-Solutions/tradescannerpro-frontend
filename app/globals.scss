@@ -34,39 +34,31 @@ $black-1 : #001D34;
 
 $white-1 : #D1D6F3;
 
-body {
-  margin: 0;
-}
-
 :root {
   background-color: white;
   color: $slate-950;
-
-  &.dark {
-    background: $slate-950;
-    color: $slate-100;
-  }
 }
 
-
-
+html.dark {
+  background: $slate-950;
+  color: $slate-100;
+}
 
 body {
   margin: 0;
   padding: 0;
-  // font-family: var(--font-dm-sans);
-    font-family: var(--font-gotham);
-
+  font-family: var(--font-gotham);
+  background-color: inherit;
+  color: inherit;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 button{
-  // font-family: var(--font-dm-sans);
-    font-family: var(--font-gotham);
+  font-family: var(--font-gotham);
   cursor: pointer;
 }
 input,textarea,select{
-  // font-family: var(--font-dm-sans);
-    font-family: var(--font-gotham);
+  font-family: var(--font-gotham);
 }
 * {
   box-sizing: border-box;
@@ -101,7 +93,6 @@ p {
   flex-direction: column;
   width: 36px;
   margin: 36px;
-  padding: 10px;
   cursor: pointer;
   position: fixed;
   right: 10px;
@@ -119,26 +110,24 @@ p {
 }
 
 .card {
-  // overflow: hidden;
   border-radius: 0.5rem;
   padding: 1.5rem;
   margin: 1.5rem 0;
+  background-color: white;
+  color: $slate-950;
+  border: 1px solid $slate-200;
+  transition: all 0.3s ease;
 
-  &.light {
-    background-color: $slate-600;
-    color: $slate-200;
-  }
-
-  &.dark {
-    background-color: $slate-200;
-    color: $slate-950;
+  .dark & {
+    background-color: $slate-800;
+    color: $slate-100;
+    border-color: $slate-600;
   }
 }
 
 // Basic styling for the page
 
 .container {
-
   min-height: 100vh;
 }
 
@@ -217,8 +206,7 @@ p {
 .custom-light-dark-theme-section {
   position: fixed;
   right: 0px;
-  top:  calc(50% - 50px) !important; // Offset to account for header height
-  // transform: translateY(50%);
+  bottom: 50px !important;
   z-index: 1002;
   background: #DDDDDD;
   border-radius: 50px;
@@ -226,7 +214,8 @@ p {
   overflow: visible;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
+  justify-content: flex-end;
   gap: 8px;
   padding: 8px;
 
@@ -237,8 +226,15 @@ p {
     
     .theme-buttons {
       opacity: 0;
-      transform: translateY(-20px);
       pointer-events: none;
+      
+      .custom-icon-alignment:first-child {
+        transform: translateX(-20px);
+      }
+      
+      .custom-icon-alignment:last-child {
+        transform: translateX(20px);
+      }
     }
   }
 
@@ -249,8 +245,15 @@ p {
     
     .theme-buttons {
       opacity: 1;
-      transform: translateY(0);
       pointer-events: all;
+      
+      .custom-icon-alignment:first-child {
+        transform: translateX(0);
+      }
+      
+      .custom-icon-alignment:last-child {
+        transform: translateX(0);
+      }
     }
   }
 
@@ -268,6 +271,8 @@ p {
     flex-shrink: 0;
     border: none;
     outline: none;
+    position: relative;
+    z-index: 2;
 
     &:hover {
       background: #6B73E5;
@@ -292,14 +297,15 @@ p {
   // Theme buttons container
   .theme-buttons {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
     transition: all 0.3s ease;
     position: absolute;
-    bottom: 60px;
-    left: 0;
-    width: 100%;
+    bottom: 6px;
+    right: 65px;
+    width: auto;
     align-items: center;
+    z-index: 1;
   }
 
   .custom-icon-alignment {
@@ -310,7 +316,7 @@ p {
     justify-content: center;
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, transform 0.3s ease;
     border: none;
     outline: none;
     background: transparent;
@@ -338,8 +344,7 @@ p {
   // Responsive behavior
   @media (max-width: 768px) {
     right: 0px;
-    top:  calc(50% - 50px) !important; // Offset to ac
-    // transform: translateY(50%);
+    bottom: 50px !important;
 
     &.collapsed {
       width: 48px;
@@ -353,6 +358,10 @@ p {
 
     .theme-buttons {
       bottom: 56px;
+      right: 0;
+      align-items: center;
+      flex-direction: row;
+      z-index: 1;
     }
 
     .toggle-arrow {
@@ -373,8 +382,7 @@ p {
 
   @media (max-width: 480px) {
     right: 0px;
-    top:  calc(50% - 50px) !important; // Offset to ac
-    // transform: translateY(50%);
+    bottom: 50px !important;
 
     &.collapsed {
       width: 44px;
@@ -387,7 +395,11 @@ p {
     }
 
     .theme-buttons {
-      bottom: 52px;
+      bottom: 6px;
+      right: 50px;
+      align-items: center;
+      flex-direction: row;
+      z-index: 1;
     }
 
     .toggle-arrow {
@@ -406,10 +418,3 @@ p {
     }
   }
 }
-// @media (max-width: 767px) {
-// video.theme-bg-video{
-//   top: unset !important;
-//   bottom: 20px !important;
-//   height: calc(228px + 35vh) !important;
-// }
-// }
