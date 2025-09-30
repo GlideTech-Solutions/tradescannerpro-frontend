@@ -5,17 +5,21 @@ import ApexCandlestickChart from "./ApexCandlestickChart";
 import { useTheme } from "../../context/ThemeContext";
 import clsx from "clsx";
 
-const timeframes = ["1D", "7D", "1M", "3M", "1Y"];
+const timeframes = [ "1M", "3M", "1Y"];
 // Helper functions for formatting
 const formatPrice = (price) => {
 	if (!price || price === 0) {
-		return `$0.00000`;
-	} else if (price < 0.01) {
-		return `$${price.toFixed(6)}`;
-	} else if (price < 1) {
-		return `$${price.toFixed(4)}`;
-	} else {
+		return `$0.000000`;
+	} else if (price >= 1) {
 		return `$${price.toFixed(2)}`;
+	} else if (price >= 0.01) {
+		return `$${price.toFixed(4)}`;
+	} else if (price >= 0.001) {
+		return `$${price.toFixed(6)}`;
+	} else if (price >= 0.0001) {
+		return `$${price.toFixed(8)}`;
+	} else {
+		return `$${price.toFixed(10)}`;
 	}
 };
 
@@ -33,7 +37,7 @@ const formatVolume = (volume) => {
 
 export default function ChartCard({ coinData, coinHistory }) {
 	const { isDarkMode } = useTheme();
-	const [selectedTimeframe, setSelectedTimeframe] = useState('7D');
+	const [selectedTimeframe, setSelectedTimeframe] = useState('1M');
 
 	console.log("ChartCard props:");
 	console.log("- coinData:", coinData);

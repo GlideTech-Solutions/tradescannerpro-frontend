@@ -77,20 +77,22 @@ const processData = (rawData) => {
 		}
 		
 		const result = {
-			x: timestamp,
+			x: index, // Use index for category-based x-axis
 			y: [finalOpen, finalHigh, finalLow, finalClose],
-			volume: parseFloat(item.volume) || 0
+			volume: parseFloat(item.volume) || 0,
+			timestamp: timestamp, // Store original timestamp for tooltip
+			dayNumber: index + 1 // Store day number for reference
 		};
 		
 		return result;
 	}).filter(item => item !== null);
 
-	const categories = series.map((item) => {
-		const date = new Date(item.x);
-		return date.toLocaleDateString("en-US", {
-			month: "short",
-			day: "numeric",
-		});
+	const categories = series.map((item, index) => {
+		if (item && item.timestamp && item.timestamp > 0) {
+			const date = new Date(item.timestamp);
+			return date.getDate().toString();
+		}
+		return (index + 1).toString();
 	});
 
 	return { series, categories };
@@ -99,7 +101,7 @@ const processData = (rawData) => {
 // Helper function to format price
 const formatPrice = (price) => {
 	if (price === undefined || price === null || isNaN(price)) {
-		return '$0.00';
+		return '$0.000000';
 	}
 	
 	if (price >= 1e9) {
@@ -108,14 +110,22 @@ const formatPrice = (price) => {
 		return `$${(price / 1e6).toFixed(1)}M`;
 	} else if (price >= 1e3) {
 		return `$${(price / 1e3).toFixed(1)}K`;
-	} else {
+	} else if (price >= 1) {
 		return `$${price.toFixed(2)}`;
+	} else if (price >= 0.01) {
+		return `$${price.toFixed(4)}`;
+	} else if (price >= 0.001) {
+		return `$${price.toFixed(6)}`;
+	} else if (price >= 0.0001) {
+		return `$${price.toFixed(8)}`;
+	} else {
+		return `$${price.toFixed(10)}`;
 	}
 };
 
 // Helper function to format Y-axis labels (cleaner format)
 const formatYAxisLabel = (value) => {
-	if (value === undefined || value === null || isNaN(value)) return '$0.00';
+	if (value === undefined || value === null || isNaN(value)) return '$0.000000';
 	
 	// Format as currency for better readability
 	if (value >= 1) {
@@ -124,8 +134,10 @@ const formatYAxisLabel = (value) => {
 		return `$${value.toFixed(4)}`;
 	} else if (value >= 0.001) {
 		return `$${value.toFixed(6)}`;
-	} else {
+	} else if (value >= 0.0001) {
 		return `$${value.toFixed(8)}`;
+	} else {
+		return `$${value.toFixed(10)}`;
 	}
 };
 
@@ -212,7 +224,18 @@ const createTooltipHTML = (data, isDarkMode, isMobile) => {
 	const change = close - open;
 	const changePercent = open > 0 ? ((change / open) * 100).toFixed(2) : '0.00';
 	const isBullish = change >= 0;
-	const date = new Date(data.x);
+	
+	// Handle timestamp properly - use the stored timestamp or fallback
+	let date;
+	if (data.timestamp && data.timestamp > 0) {
+		date = new Date(data.timestamp);
+	} else if (data.x && data.x > 0) {
+		date = new Date(data.x);
+	} else {
+		// Fallback to current date if timestamp is invalid
+		date = new Date();
+	}
+	
 	const formattedTime = date.toLocaleString("en-US", {
 		month: "short",
 		day: "numeric",
@@ -379,7 +402,14 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 			}
 		},
 		xaxis: {
-			type: 'datetime',
+			type: 'category',
+			categories: processedSeries.map((item, index) => {
+				if (item && item.timestamp && item.timestamp > 0) {
+					const date = new Date(item.timestamp);
+					return date.getDate().toString();
+				}
+				return (index + 1).toString();
+			}),
 			labels: {
 				show: true,
 				style: {
@@ -387,21 +417,12 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					fontWeight: 500,
 					color: isDarkMode ? '#B0B0B0' : '#374151'
 				},
-				rotate: xAxisRotate,
-				rotateAlways: isMobile || isTablet,
-				datetimeUTC: false,
-				format: isMobile ? 'MMM dd' : isTablet ? 'MMM dd' : 'MMM dd HH:mm',
+				rotate: 0,
+				rotateAlways: false,
 				maxHeight: isMobile ? 60 : isTablet ? 50 : 40,
-				formatter: function(value) {
-					const date = new Date(value);
-					if (isMobile) {
-						return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-					} else if (isTablet) {
-						return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-					} else {
-						return date.toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
-					}
-				}
+				trim: false,
+				hideOverlappingLabels: false,
+				show: true
 			},
 			axisBorder: {
 				show: true,
@@ -489,99 +510,32 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				return { x, y };
 			},
 		custom: function({ series, seriesIndex, dataPointIndex, w }) {
-			// Try multiple ways to get the data
+			// Get data from the most reliable source - our processed series
 			let open, high, low, close, volume, timestamp;
 			
-			// Method 1: Try from series data directly
-			if (series && series[seriesIndex] && series[seriesIndex][dataPointIndex] !== undefined) {
-				const seriesData = series[seriesIndex];
-				const dataPoint = seriesData[dataPointIndex];
-				
-				// Check if it's an array (OHLC format)
-				if (Array.isArray(dataPoint) && dataPoint.length >= 4) {
-					[open, high, low, close] = dataPoint;
-				}
-			}
-			
-			// Method 2: Try from original series data
-			if (!open && w.globals.initialSeries && w.globals.initialSeries[seriesIndex]) {
-				const originalData = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
-				
-				if (originalData && originalData.y && Array.isArray(originalData.y)) {
-					[open, high, low, close] = originalData.y;
-					timestamp = originalData.x;
-					volume = originalData.volume || 0;
-				}
-			}
-			
-			// Method 3: Try from w.globals.seriesCandleO (ApexCharts candlestick specific)
-			if (!open && w.globals.seriesCandleO && w.globals.seriesCandleO[seriesIndex]) {
-				const candleData = w.globals.seriesCandleO[seriesIndex];
-				
-				if (candleData && candleData[dataPointIndex]) {
-					const candlePoint = candleData[dataPointIndex];
-					if (Array.isArray(candlePoint) && candlePoint.length >= 4) {
-						[open, high, low, close] = candlePoint;
-					}
-				}
-			}
-			
-			// Method 4: Try from w.globals.seriesCandleH, seriesCandleL, seriesCandleC
-			if (!open && w.globals.seriesCandleH && w.globals.seriesCandleL && w.globals.seriesCandleC && w.globals.seriesCandleO) {
-				if (w.globals.seriesCandleO[seriesIndex] && w.globals.seriesCandleH[seriesIndex] && 
-					w.globals.seriesCandleL[seriesIndex] && w.globals.seriesCandleC[seriesIndex]) {
-					open = w.globals.seriesCandleO[seriesIndex][dataPointIndex];
-					high = w.globals.seriesCandleH[seriesIndex][dataPointIndex];
-					low = w.globals.seriesCandleL[seriesIndex][dataPointIndex];
-					close = w.globals.seriesCandleC[seriesIndex][dataPointIndex];
-				}
-			}
-			
-			// Method 5: Try from w.config.series
-			if (!open && w.config && w.config.series && w.config.series[seriesIndex]) {
-				const configData = w.config.series[seriesIndex].data[dataPointIndex];
-				
-				if (configData && configData.y && Array.isArray(configData.y)) {
-					[open, high, low, close] = configData.y;
-					timestamp = configData.x;
-					volume = configData.volume || 0;
-				}
-			}
-			
-			// Method 6: Try from the actual candlestick data structure
-			if (!open && w.globals.series && w.globals.series[seriesIndex]) {
-				const globalSeries = w.globals.series[seriesIndex];
-				
-				if (globalSeries && globalSeries[dataPointIndex]) {
-					const globalDataPoint = globalSeries[dataPointIndex];
-					
-					if (Array.isArray(globalDataPoint) && globalDataPoint.length >= 4) {
-						[open, high, low, close] = globalDataPoint;
-					}
-				}
-			}
-			
-			// Method 7: Try to get data from our original processed data
-			if (!open && w.config && w.config.series && w.config.series[seriesIndex] && w.config.series[seriesIndex].data) {
+			// Primary method: Get from our processed series data
+			if (w.config && w.config.series && w.config.series[seriesIndex] && w.config.series[seriesIndex].data) {
 				const ourData = w.config.series[seriesIndex].data[dataPointIndex];
 				
-				if (ourData && ourData.y && Array.isArray(ourData.y)) {
+				if (ourData && ourData.y && Array.isArray(ourData.y) && ourData.y.length >= 4) {
 					[open, high, low, close] = ourData.y;
-					timestamp = ourData.x;
+					timestamp = ourData.timestamp || ourData.x;
 					volume = ourData.volume || 0;
 				}
 			}
 			
-			// Fallback: Use the processed series data we created
-			if (!open && series && series[0] && series[0][dataPointIndex]) {
-				const fallbackData = series[0][dataPointIndex];
+			// Fallback method: Try from series data directly
+			if (!open && series && series[seriesIndex] && series[seriesIndex][dataPointIndex]) {
+				const seriesData = series[seriesIndex][dataPointIndex];
 				
-				if (Array.isArray(fallbackData) && fallbackData.length >= 4) {
-					[open, high, low, close] = fallbackData;
+				if (Array.isArray(seriesData) && seriesData.length >= 4) {
+					[open, high, low, close] = seriesData;
 				}
 			}
 			
-			if (!open || !high || !low || !close) {
+			// Validate that we have all required values
+			if (open === undefined || high === undefined || low === undefined || close === undefined) {
+				console.warn('Tooltip: Missing OHLC data for point', dataPointIndex);
 				return '';
 			}
 			
@@ -589,7 +543,9 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 			const data = {
 				x: timestamp || new Date().getTime(),
 				y: [open, high, low, close],
-				volume: volume || 0
+				volume: volume || 0,
+				timestamp: timestamp || new Date().getTime(),
+				dayNumber: dataPointIndex + 1
 			};
 			
 			return createTooltipHTML(data, isDarkMode, isMobile);
@@ -636,14 +592,29 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					}
 				},
 				xaxis: {
+					categories: processedSeries.map((item, index) => {
+						// Always ensure we have a label for each item
+						if (item && item.timestamp && item.timestamp > 0) {
+							const date = new Date(item.timestamp);
+							// Show exact date format: MMM DD (e.g., "Sep 3", "Sep 4", "Sep 5")
+							return date.toLocaleDateString("en-US", { 
+								
+								day: "numeric" 
+							});
+						}
+						// Fallback: show sequential numbers
+						return (index + 1).toString();
+					}),
 					labels: {
-						rotate: -45,
-						rotateAlways: true,
+						show: true,
+						rotate: 0,
+						rotateAlways: false,
 						style: {
 							fontSize: '9px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
-						format: 'MMM dd',
+						trim: false,
+						hideOverlappingLabels: false,
 						maxHeight: 40
 					}
 				},
@@ -687,14 +658,23 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					}
 				},
 				xaxis: {
+					categories: processedSeries.map((item, index) => {
+						if (item && item.timestamp && item.timestamp > 0) {
+							const date = new Date(item.timestamp);
+							return date.getDate().toString();
+						}
+						return (index + 1).toString();
+					}),
 					labels: {
-						rotate: -30,
-						rotateAlways: true,
+						show: true,
+						rotate: 0,
+						rotateAlways: false,
 						style: {
 							fontSize: '10px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
-						format: 'MMM dd',
+						trim: false,
+						hideOverlappingLabels: false,
 						maxHeight: 50
 					}
 				},
@@ -738,14 +718,23 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					}
 				},
 				xaxis: {
+					categories: processedSeries.map((item, index) => {
+						if (item && item.timestamp && item.timestamp > 0) {
+							const date = new Date(item.timestamp);
+							return date.getDate().toString();
+						}
+						return (index + 1).toString();
+					}),
 					labels: {
+						show: true,
 						rotate: 0,
 						rotateAlways: false,
 						style: {
 							fontSize: '11px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
-						format: 'MMM dd'
+						trim: false,
+						hideOverlappingLabels: false
 					}
 				},
 				yaxis: {
