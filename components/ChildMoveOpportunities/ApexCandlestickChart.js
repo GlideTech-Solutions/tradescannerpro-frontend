@@ -406,7 +406,15 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 			categories: processedSeries.map((item, index) => {
 				if (item && item.timestamp && item.timestamp > 0) {
 					const date = new Date(item.timestamp);
+					// First item shows month name, others show actual day number from timestamp
+					if (index === 0) {
+						return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+					}
 					return date.getDate().toString();
+				}
+				// Fallback for items without timestamp
+				if (index === 0) {
+					return new Date().toLocaleDateString("en-US", { month: "short" }).toUpperCase();
 				}
 				return (index + 1).toString();
 			}),
@@ -421,8 +429,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				rotateAlways: false,
 				maxHeight: isMobile ? 60 : isTablet ? 50 : 40,
 				trim: false,
-				hideOverlappingLabels: false,
-				show: true
+				hideOverlappingLabels: false
 			},
 			axisBorder: {
 				show: true,
@@ -596,13 +603,16 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						// Always ensure we have a label for each item
 						if (item && item.timestamp && item.timestamp > 0) {
 							const date = new Date(item.timestamp);
-							// Show exact date format: MMM DD (e.g., "Sep 3", "Sep 4", "Sep 5")
-							return date.toLocaleDateString("en-US", { 
-								
-								day: "numeric" 
-							});
+							// First item shows month name, others show day number
+							if (index === 0) {
+								return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+							}
+							return date.getDate().toString();
 						}
-						// Fallback: show sequential numbers
+						// Fallback: show month name for first item, numbers for others
+						if (index === 0) {
+							return new Date().toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+						}
 						return (index + 1).toString();
 					}),
 					labels: {
@@ -620,6 +630,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				},
 				yaxis: {
 					labels: {
+						show: true,
 						style: {
 							fontSize: '9px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
@@ -661,7 +672,15 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					categories: processedSeries.map((item, index) => {
 						if (item && item.timestamp && item.timestamp > 0) {
 							const date = new Date(item.timestamp);
+							// First item shows month name, others show day number
+							if (index === 0) {
+								return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+							}
 							return date.getDate().toString();
+						}
+						// Fallback: show month name for first item, numbers for others
+						if (index === 0) {
+							return new Date().toLocaleDateString("en-US", { month: "short" }).toUpperCase();
 						}
 						return (index + 1).toString();
 					}),
@@ -680,6 +699,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				},
 				yaxis: {
 					labels: {
+						show: true,
 						style: {
 							fontSize: '10px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
@@ -721,7 +741,15 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					categories: processedSeries.map((item, index) => {
 						if (item && item.timestamp && item.timestamp > 0) {
 							const date = new Date(item.timestamp);
+							// First item shows month name, others show day number
+							if (index === 0) {
+								return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+							}
 							return date.getDate().toString();
+						}
+						// Fallback: show month name for first item, numbers for others
+						if (index === 0) {
+							return new Date().toLocaleDateString("en-US", { month: "short" }).toUpperCase();
 						}
 						return (index + 1).toString();
 					}),
@@ -739,6 +767,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				},
 				yaxis: {
 					labels: {
+						show: true,
 						style: {
 							fontSize: '11px',
 							color: isDarkMode ? '#B0B0B0' : '#374151'
