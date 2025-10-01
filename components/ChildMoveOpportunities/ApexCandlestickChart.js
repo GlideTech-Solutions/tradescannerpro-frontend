@@ -77,7 +77,7 @@ const processData = (rawData) => {
 		}
 		
 		const result = {
-			x: index, // Use index for category-based x-axis
+			x: timestamp, // Use timestamp for proper tooltip display
 			y: [finalOpen, finalHigh, finalLow, finalClose],
 			volume: parseFloat(item.volume) || 0,
 			timestamp: timestamp, // Store original timestamp for tooltip
@@ -313,7 +313,7 @@ const createTooltipHTML = (data, isDarkMode, isMobile) => {
 	`;
 };
 
-export default function ApexCandlestickChart({ data, isDarkMode, isLoading = false }) {
+export default function ApexCandlestickChart({ data, isDarkMode, isLoading = false, timeframe = '1m' }) {
 	const { isMobile, isTablet } = useResponsive();
 	const [isClient, setIsClient] = useState(false);
 
@@ -372,7 +372,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				offsetY: 0,
 			},
 			zoom: {
-				enabled: true,
+				enabled: false,
 				type: 'x',
 				autoScaleYaxis: true,
 			},
@@ -402,22 +402,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 			}
 		},
 		xaxis: {
-			type: 'category',
-			categories: processedSeries.map((item, index) => {
-				if (item && item.timestamp && item.timestamp > 0) {
-					const date = new Date(item.timestamp);
-					// First item shows month name, others show actual day number from timestamp
-					if (index === 0) {
-						return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-					}
-					return date.getDate().toString();
-				}
-				// Fallback for items without timestamp
-				if (index === 0) {
-					return new Date().toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-				}
-				return (index + 1).toString();
-			}),
+			type: 'datetime',
 			labels: {
 				show: true,
 				style: {
@@ -429,8 +414,31 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				rotateAlways: false,
 				maxHeight: isMobile ? 60 : isTablet ? 50 : 40,
 				trim: false,
-				hideOverlappingLabels: false
+				hideOverlappingLabels: true,
+				showDuplicates: false,
+				datetimeUTC: false,
+				formatter: function(value, timestamp) {
+					const date = new Date(timestamp);
+					
+					// Format based on timeframe
+					if (timeframe === '1d') {
+						// For 1 day, show hours (e.g., "00:00", "04:00")
+						const hours = date.getHours().toString().padStart(2, '0');
+						const minutes = date.getMinutes().toString().padStart(2, '0');
+						return `${hours}:${minutes}`;
+					} else if (timeframe === '7d') {
+						// For 7 days, show month and day (e.g., "Jan 1")
+						const month = date.toLocaleString('en-US', { month: 'short' });
+						const day = date.getDate();
+						return `${month} ${day}`;
+					} else {
+						// For 1 month, show date (e.g., "1", "5", "10")
+						return date.getDate().toString();
+					}
+				}
 			},
+			tickAmount: timeframe === '1d' ? 12 : timeframe === '7d' ? 7 : processedSeries.length > 15 ? 15 : processedSeries.length - 1,
+			tickPlacement: 'between',
 			axisBorder: {
 				show: true,
 				color: isDarkMode ? '#4A5568' : '#D1D5DB'
@@ -599,22 +607,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					}
 				},
 				xaxis: {
-					categories: processedSeries.map((item, index) => {
-						// Always ensure we have a label for each item
-						if (item && item.timestamp && item.timestamp > 0) {
-							const date = new Date(item.timestamp);
-							// First item shows month name, others show day number
-							if (index === 0) {
-								return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-							}
-							return date.getDate().toString();
-						}
-						// Fallback: show month name for first item, numbers for others
-						if (index === 0) {
-							return new Date().toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-						}
-						return (index + 1).toString();
-					}),
+					type: 'datetime',
 					labels: {
 						show: true,
 						rotate: 0,
@@ -625,8 +618,16 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						},
 						trim: false,
 						hideOverlappingLabels: false,
-						maxHeight: 40
-					}
+						showDuplicates: false,
+						maxHeight: 40,
+						datetimeUTC: false,
+						formatter: function(value, timestamp) {
+							const date = new Date(timestamp);
+							return date.getDate().toString();
+						}
+					},
+					tickAmount: processedSeries.length - 1,
+					tickPlacement: 'between'
 				},
 				yaxis: {
 					labels: {
@@ -669,21 +670,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					}
 				},
 				xaxis: {
-					categories: processedSeries.map((item, index) => {
-						if (item && item.timestamp && item.timestamp > 0) {
-							const date = new Date(item.timestamp);
-							// First item shows month name, others show day number
-							if (index === 0) {
-								return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-							}
-							return date.getDate().toString();
-						}
-						// Fallback: show month name for first item, numbers for others
-						if (index === 0) {
-							return new Date().toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-						}
-						return (index + 1).toString();
-					}),
+					type: 'datetime',
 					labels: {
 						show: true,
 						rotate: 0,
@@ -694,8 +681,16 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						},
 						trim: false,
 						hideOverlappingLabels: false,
-						maxHeight: 50
-					}
+						showDuplicates: false,
+						maxHeight: 50,
+						datetimeUTC: false,
+						formatter: function(value, timestamp) {
+							const date = new Date(timestamp);
+							return date.getDate().toString();
+						}
+					},
+					tickAmount: processedSeries.length - 1,
+					tickPlacement: 'between'
 				},
 				yaxis: {
 					labels: {
@@ -738,21 +733,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					}
 				},
 				xaxis: {
-					categories: processedSeries.map((item, index) => {
-						if (item && item.timestamp && item.timestamp > 0) {
-							const date = new Date(item.timestamp);
-							// First item shows month name, others show day number
-							if (index === 0) {
-								return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-							}
-							return date.getDate().toString();
-						}
-						// Fallback: show month name for first item, numbers for others
-						if (index === 0) {
-							return new Date().toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-						}
-						return (index + 1).toString();
-					}),
+					type: 'datetime',
 					labels: {
 						show: true,
 						rotate: 0,
@@ -762,8 +743,16 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
 						trim: false,
-						hideOverlappingLabels: false
-					}
+						hideOverlappingLabels: false,
+						showDuplicates: false,
+						datetimeUTC: false,
+						formatter: function(value, timestamp) {
+							const date = new Date(timestamp);
+							return date.getDate().toString();
+						}
+					},
+					tickAmount: processedSeries.length - 1,
+					tickPlacement: 'between'
 				},
 				yaxis: {
 					labels: {
@@ -813,11 +802,13 @@ ApexCandlestickChart.propTypes = {
 	data: PropTypes.array,
 	isDarkMode: PropTypes.bool.isRequired,
 	isLoading: PropTypes.bool,
+	timeframe: PropTypes.string,
 };
 
 ApexCandlestickChart.defaultProps = {
 	data: [],
 	isLoading: false,
+	timeframe: '1m',
 };
 
 LoadingState.propTypes = {

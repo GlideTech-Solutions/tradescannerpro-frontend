@@ -221,15 +221,30 @@
 
         .moveOpportunities-child-bottom-grid {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
           gap: 20px;
 
-          @media (max-width : 972px) {
-            grid-template-columns: repeat(3, 1fr);
+          &.grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+
+            @media (max-width : 972px) {
+              grid-template-columns: repeat(3, 1fr);
+            }
+
+            @media (max-width : 767px) {
+              grid-template-columns: repeat(1, 1fr);
+            }
           }
 
-          @media (max-width : 767px) {
-            grid-template-columns: repeat(1, 1fr);
+          &.grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+
+            @media (max-width : 972px) {
+              grid-template-columns: repeat(2, 1fr);
+            }
+
+            @media (max-width : 767px) {
+              grid-template-columns: repeat(1, 1fr);
+            }
           }
 
           .moveOpportunities-child-bottom-grid-item {

@@ -33,8 +33,15 @@ export async function GET(request, { params }) {
       );
     }
 
+    // Get query parameters from the request
+    const { searchParams } = new URL(request.url);
+    const timeframe = searchParams.get('timeframe') || '1m';
+
+    // Build the external API URL with query parameters
+    const externalApiUrl = `${API_BASE_URL}/crypto/coin/${id}/history?timeframe=${timeframe}`;
+
     // Forward the request to the external API
-    const response = await fetch(`${API_BASE_URL}/crypto/coin/${id}/history`, {
+    const response = await fetch(externalApiUrl, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,

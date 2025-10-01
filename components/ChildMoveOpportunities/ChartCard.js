@@ -1,11 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import PropTypes from "prop-types";
 import StatsRow from "./StatsRow";
 import ApexCandlestickChart from "./ApexCandlestickChart";
 import { useTheme } from "../../context/ThemeContext";
-import clsx from "clsx";
 
-const timeframes = [ "1M"];
 // Helper functions for formatting
 const formatPrice = (price) => {
 	if (!price || price === 0) {
@@ -23,6 +21,17 @@ const formatPrice = (price) => {
 	}
 };
 
+const formatDateTime = (timestamp) => {
+	if (!timestamp) return '-';
+	const date = new Date(timestamp);
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	const year = date.getFullYear();
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	return `${month}/${day}/${year} ${hours}:${minutes}`;
+};
+
 const formatVolume = (volume) => {
 	if (!volume || volume === 0) {
 		return `$0.00K`;
@@ -35,9 +44,8 @@ const formatVolume = (volume) => {
 	}
 };
 
-export default function ChartCard({ coinData, coinHistory }) {
+export default function ChartCard({ coinData, coinHistory, selectedTimeframe, onTimeframeChange }) {
 	const { isDarkMode } = useTheme();
-	const [selectedTimeframe, setSelectedTimeframe] = useState('1M');
 
 	console.log("ChartCard props:");
 	console.log("- coinData:", coinData);
@@ -46,6 +54,7 @@ export default function ChartCard({ coinData, coinHistory }) {
 	// Transform the API data to chart format
 	const data = useMemo(() => {
 		console.log("Transforming data in ChartCard...");
+		console.log("Selected timeframe:", selectedTimeframe);
 		
 		// Handle different possible response structures
 		let historyData = null;
@@ -60,10 +69,17 @@ export default function ChartCard({ coinData, coinHistory }) {
 			console.log("Data is in coinHistory.data");
 			historyData = coinHistory.data;
 		}
-		// Check if data is in coinHistory.history
+		// Check if data is in coinHistory.history (for old API format)
 		else if (coinHistory?.history && Array.isArray(coinHistory.history)) {
 			console.log("Data is in coinHistory.history");
 			historyData = coinHistory.history;
+		}
+		// Check if data is in coinHistory.data.history[timeframe] (new API format)
+		else if (coinHistory?.data?.history) {
+			console.log("Data is in coinHistory.data.history object");
+			const timeframeKey = selectedTimeframe || '1m';
+			historyData = coinHistory.data.history[timeframeKey];
+			console.log(`Extracted data for timeframe ${timeframeKey}:`, historyData);
 		}
 		
 		console.log("Extracted historyData:", historyData);
@@ -137,45 +153,37 @@ export default function ChartCard({ coinData, coinHistory }) {
 		console.log("Transformed data length:", transformedData.length);
 		
 		return transformedData;
-	}, [coinHistory]);
+	}, [coinHistory, selectedTimeframe]);
 
-	// Filter data based on selected timeframe
+	// Since the API now returns the correct timeframe data, we don't need to filter
+	// Just use the data directly
 	const filteredData = useMemo(() => {
 		if (!data || data.length === 0) return [];
-		
-		const now = new Date();
-		let cutoffDate;
-		
-		switch (selectedTimeframe) {
-			case '1D':
-				cutoffDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-				break;
-			case '7D':
-				cutoffDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-				break;
-			case '1M':
-				cutoffDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-				break;
-			case '3M':
-				cutoffDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-				break;
-			case '1Y':
-				cutoffDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
-				break;
-			default:
-				cutoffDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-		}
-		
-		return data.filter(item => {
-			const itemDate = new Date(item.time);
-			return itemDate >= cutoffDate;
-		});
-	}, [data, selectedTimeframe]);
+		return data;
+	}, [data]);
 
 	// Extract coin info from coinData or use defaults
 	const coinSymbol = coinData?.symbol?.toUpperCase() || "COIN";
 	const coinName = coinData?.name || "Cryptocurrency";
 	const coinImage = coinData?.image;
+
+	// Extract latest candle data from API response
+	const latestCandle = useMemo(() => {
+		// Check if latest_candle exists in the response
+		if (coinHistory?.data?.latest_candle) {
+			console.log("Using latest_candle from API:", coinHistory.data.latest_candle);
+			return coinHistory.data.latest_candle;
+		}
+		
+		// Fallback to last item in filtered data if latest_candle not available
+		if (filteredData && filteredData.length > 0) {
+			console.log("Fallback: Using last item from filteredData");
+			return filteredData[filteredData.length - 1];
+		}
+		
+		console.log("No latest candle data available");
+		return null;
+	}, [coinHistory, filteredData]);
 
 
 	// Calculate additional statistics
@@ -248,63 +256,69 @@ export default function ChartCard({ coinData, coinHistory }) {
 
 			<div className="toolbars">
 				<div className="pills">
-					{(() => {
-						// Get the latest data point from filtered data
-						// data format: {time, open, high, low, close, volume}
-						const latest = filteredData[filteredData.length - 1] || {};
-						const open = latest.open;
-						const high = latest.high;
-						const low = latest.low;
-						const close = latest.close;
-						
-						// Debug: Log chips data
-						console.log('=== CHIPS DEBUG ===');
-						console.log('Latest data point:', latest);
-						console.log('OHLC values - Open:', open, 'High:', high, 'Low:', low, 'Close:', close);
-						console.log('Filtered data length:', filteredData.length);
-						console.log('Selected timeframe:', selectedTimeframe);
-						console.log('=== END CHIPS DEBUG ===');
-						
-						return (
-							<>
-								{/* <span className="pill">
-									<span className="swatch50" /> Close:{" "}
-									<b>{close !== undefined ? formatPrice(close) : "-"}</b>
-								</span>
-								<span className="pill">
-									<span className="swatch200" /> High:{" "}
-									<b>{high !== undefined ? formatPrice(high) : "-"}</b>
-								</span>
-								<span className="pill">
-									<span className="swatch200" /> Low:{" "}
-									<b>{low !== undefined ? formatPrice(low) : "-"}</b>
-								</span>
-								<span className="pill">
-									<span className="swatch200" /> Open:{" "}
-									<b>{open !== undefined ? formatPrice(open) : "-"}</b>
-								</span> */}
-							</>
-						);
-					})()}
+					{latestCandle ? (
+						<>
+							<span style={{ 
+								fontSize: '12px',
+								color: isDarkMode ? '#bcd3e5' : '#666',
+								marginRight: '15px',
+								display:'flex',
+								alignItems:'center',
+							}}>
+								{formatDateTime(latestCandle.time)}
+							</span>
+							<span className="pill">
+								<span className="swatch50" /> Close:{" "}
+								<b>{formatPrice(latestCandle.close)}</b>
+							</span>
+							<span className="pill">
+								<span className="swatch200" /> High:{" "}
+								<b>{formatPrice(latestCandle.high)}</b>
+							</span>
+							<span className="pill">
+								<span className="swatch200" /> Low:{" "}
+								<b>{formatPrice(latestCandle.low)}</b>
+							</span>
+							<span className="pill">
+								<span className="swatch200" /> Open:{" "}
+								<b>{formatPrice(latestCandle.open)}</b>
+							</span>
+							<span className="pill">
+								<span className="swatch200" /> Volume:{" "}
+								<b>{formatVolume(latestCandle.volume)}</b>
+							</span>
+						</>
+					) : (
+						<span className="pill" style={{ opacity: 0.5 }}>
+							No data available
+						</span>
+					)}
 				</div>
 
-				<div className="tabs">
-          {timeframes.map((t) => (
-            <button
-              key={t}
-              className={clsx("tab", t === selectedTimeframe && "tabActive")}
-              onClick={() => setSelectedTimeframe(t)}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
+				{/* Timeframe selector */}
+				{onTimeframeChange && (
+					<div className="tabs">
+						{['1d', '7d', '1m'].map((timeframe) => (
+							<button
+								key={timeframe}
+								className={selectedTimeframe === timeframe ? 'tab tabActive' : 'tab'}
+								onClick={() => onTimeframeChange(timeframe)}
+							>
+								{timeframe.toUpperCase()}
+							</button>
+						))}
+					</div>
+				)}
 			</div>
 
 			{/* Chart */}
 			<div className="chartWrap">
 				{filteredData.length > 0 ? (
-					<ApexCandlestickChart data={filteredData} isDarkMode={isDarkMode} />
+					<ApexCandlestickChart 
+						data={filteredData} 
+						isDarkMode={isDarkMode} 
+						timeframe={selectedTimeframe}
+					/>
 				) : (
 					<div 
 						style={{
@@ -322,7 +336,7 @@ export default function ChartCard({ coinData, coinHistory }) {
 			</div>
 
 			{/* Stats row */}
-			<StatsRow isDarkMode={isDarkMode} stats={stats} coinData={coinData} />
+			<StatsRow isDarkMode={isDarkMode} stats={stats} coinData={coinData} coinHistory={coinHistory} />
 		</div>
 	);
 }
@@ -330,4 +344,6 @@ export default function ChartCard({ coinData, coinHistory }) {
 ChartCard.propTypes = {
 	coinData: PropTypes.object,
 	coinHistory: PropTypes.object,
+	selectedTimeframe: PropTypes.string,
+	onTimeframeChange: PropTypes.func,
 };

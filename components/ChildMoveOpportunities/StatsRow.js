@@ -45,13 +45,16 @@ const formatVolume = (volume) => {
   }
 };
 
-export default function StatsRow({ isDarkMode = false, stats = null, coinData = null }) {
+export default function StatsRow({ isDarkMode = false, stats = null, coinData = null, coinHistory = null }) {
+  // Extract data from API response
+  const current = coinHistory?.data?.current;
+  const rsi = coinHistory?.data?.rsi;
 
   const items = [
     {
       key: "market_cap",
       label: "Market Cap",
-      value: coinData?.market_cap ? formatMarketCap(coinData.market_cap) : "-",
+      value: current?.market_cap ? formatMarketCap(current.market_cap) : "-",
       icon: isDarkMode
         ? "/assets/icons/gray-chart-histogram.svg"
         : "/assets/icons/chart-histogram.svg",
@@ -59,7 +62,7 @@ export default function StatsRow({ isDarkMode = false, stats = null, coinData = 
     {
       key: "total_volume",
       label: "24h Volume",
-      value: coinData?.total_volume ? formatVolume(coinData.total_volume) : "-",
+      value: current?.total_volume ? formatVolume(current.total_volume) : "-",
       icon: isDarkMode
         ? "/assets/icons/gray-chart-simple.svg"
         : "/assets/icons/chart-simple.svg",
@@ -67,24 +70,31 @@ export default function StatsRow({ isDarkMode = false, stats = null, coinData = 
     {
       key: "rsi",
       label: "RSI",
-      value: coinData?.rsi ? formatRSI(coinData.rsi) : "-",
+      value: rsi ? formatRSI(rsi) : "-",
       icon: isDarkMode
         ? "/assets/icons/gray-holding-hand-revenue.svg"
         : "/assets/icons/holding-hand-revenue.svg",
     },
-    {
+  ];
+
+  // Only add Strength if coinData?.strength is available
+  if (coinData?.strength) {
+    items.push({
       key: "strength",
       label: "Strength",
-      value: coinData?.strength || "-",
+      value: coinData.strength,
       icon: isDarkMode
         ? "/assets/icons/gray-ranking-podium-empty.svg"
         : "/assets/icons/ranking-podium-empty.svg",
-    },
-  ];
+    });
+  }
 
   return (
     <div className="moveOpportunities-child-bottom-alignment">
-      <div className="moveOpportunities-child-bottom-grid">
+      <div className={clsx(
+        "moveOpportunities-child-bottom-grid",
+        coinData?.strength ? "grid-4" : "grid-3"
+      )}>
         {items.map((it) => (
           <div
             key={it.key}
@@ -116,4 +126,5 @@ StatsRow.propTypes = {
   isDarkMode: PropTypes.bool,
   stats: PropTypes.object,
   coinData: PropTypes.object,
+  coinHistory: PropTypes.object,
 };

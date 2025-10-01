@@ -40,6 +40,7 @@ export default function ChildMoveOpportunities() {
   const [coinHistory, setCoinHistory] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedTimeframe, setSelectedTimeframe] = useState('1m');
   const coinId = searchParams.get('id');
 
   // Find the coin data from scan results
@@ -90,11 +91,11 @@ export default function ChildMoveOpportunities() {
 
   useEffect(() => {
     if (coinId) {
-      console.log("ChildMoveOpportunities: Fetching coin history for ID:", coinId);
+      console.log("ChildMoveOpportunities: Fetching coin history for ID:", coinId, "Timeframe:", selectedTimeframe);
       setLoading(true);
       setError(null);
       
-        apiClient.getCoinHistory(coinId)
+        apiClient.getCoinHistory(coinId, selectedTimeframe)
           .then(data => {
             console.log("ChildMoveOpportunities: API response received:", data);
             setCoinHistory(data);
@@ -113,7 +114,7 @@ export default function ChildMoveOpportunities() {
           })
         .finally(() => setLoading(false));
     }
-  }, [coinId, router]);
+  }, [coinId, selectedTimeframe, router]);
 
   return (
     <div>
@@ -131,8 +132,6 @@ export default function ChildMoveOpportunities() {
             <img src="/assets/icons/arrow-small-left.svg" alt="left arrow" />
             <span>Back</span>
           </button>
-
-        
 
           <div
             className={`moveOpportunities-child-box-alignment ${
@@ -178,6 +177,8 @@ export default function ChildMoveOpportunities() {
                     <ChartCard 
                       coinData={coinData} 
                       coinHistory={coinHistory}
+                      selectedTimeframe={selectedTimeframe}
+                      onTimeframeChange={setSelectedTimeframe}
                     />
                   )}
                 </div>
