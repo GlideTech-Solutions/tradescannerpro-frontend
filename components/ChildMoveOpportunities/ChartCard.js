@@ -5,7 +5,7 @@ import ApexCandlestickChart from "./ApexCandlestickChart";
 import { useTheme } from "../../context/ThemeContext";
 import clsx from "clsx";
 
-const timeframes = [ "1M", "3M", "1Y"];
+const timeframes = [ "1M"];
 // Helper functions for formatting
 const formatPrice = (price) => {
 	if (!price || price === 0) {
@@ -267,7 +267,7 @@ export default function ChartCard({ coinData, coinHistory }) {
 						
 						return (
 							<>
-								<span className="pill">
+								{/* <span className="pill">
 									<span className="swatch50" /> Close:{" "}
 									<b>{close !== undefined ? formatPrice(close) : "-"}</b>
 								</span>
@@ -282,7 +282,7 @@ export default function ChartCard({ coinData, coinHistory }) {
 								<span className="pill">
 									<span className="swatch200" /> Open:{" "}
 									<b>{open !== undefined ? formatPrice(open) : "-"}</b>
-								</span>
+								</span> */}
 							</>
 						);
 					})()}
