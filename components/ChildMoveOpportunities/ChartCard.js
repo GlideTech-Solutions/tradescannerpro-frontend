@@ -44,7 +44,7 @@ const formatVolume = (volume) => {
 	}
 };
 
-export default function ChartCard({ coinData, coinHistory, selectedTimeframe, onTimeframeChange }) {
+export default function ChartCard({ coinData, coinHistory, selectedTimeframe, onTimeframeChange, isLoading = false }) {
 	const { isDarkMode } = useTheme();
 
 	console.log("ChartCard props:");
@@ -260,7 +260,7 @@ export default function ChartCard({ coinData, coinHistory, selectedTimeframe, on
 						<>
 							<span style={{ 
 								fontSize: '12px',
-								color: isDarkMode ? '#bcd3e5' : '#666',
+								color: isDarkMode ? '#bcd3e5' : '#bcd3e5',
 								marginRight: '15px',
 								display:'flex',
 								alignItems:'center',
@@ -313,7 +313,28 @@ export default function ChartCard({ coinData, coinHistory, selectedTimeframe, on
 
 			{/* Chart */}
 			<div className="chartWrap">
-				{filteredData.length > 0 ? (
+				{isLoading ? (
+					<div 
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							height: '350px',
+							color: isDarkMode ? '#888' : '#666',
+							fontSize: '14px',
+							flexDirection: 'column',
+							gap: '10px'
+						}}
+					>
+						<div style={{ 
+							fontSize: '24px', 
+							animation: 'spin 1s linear infinite'
+						}}>
+							⏳
+						</div>
+						<div>Loading chart data...</div>
+					</div>
+				) : filteredData.length > 0 ? (
 					<ApexCandlestickChart 
 						data={filteredData} 
 						isDarkMode={isDarkMode} 
@@ -330,7 +351,7 @@ export default function ChartCard({ coinData, coinHistory, selectedTimeframe, on
 							fontSize: '14px'
 						}}
 					>
-						{coinHistory?.data ? 'No chart data available' : 'Loading chart data...'}
+						No chart data available
 					</div>
 				)}
 			</div>
@@ -346,4 +367,5 @@ ChartCard.propTypes = {
 	coinHistory: PropTypes.object,
 	selectedTimeframe: PropTypes.string,
 	onTimeframeChange: PropTypes.func,
+	isLoading: PropTypes.bool,
 };

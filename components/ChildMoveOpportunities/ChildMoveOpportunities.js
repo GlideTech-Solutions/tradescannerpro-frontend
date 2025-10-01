@@ -39,6 +39,7 @@ export default function ChildMoveOpportunities() {
   const searchParams = useSearchParams();
   const [coinHistory, setCoinHistory] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState('1m');
   const coinId = searchParams.get('id');
@@ -112,7 +113,10 @@ export default function ChildMoveOpportunities() {
             // API client already shows toast, just set local error state for UI
             setError(err.message || 'Failed to fetch coin history');
           })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+          setInitialLoading(false);
+        });
     }
   }, [coinId, selectedTimeframe, router]);
 
@@ -141,8 +145,8 @@ export default function ChildMoveOpportunities() {
             <div className="moveOpportunities-child-chart-alignment">
               <main>
                 <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-                  {loading && <Loading message="Loading coin history..." />}
-                  {error && (
+                  {initialLoading && <Loading message="Loading coin history..." />}
+                  {!initialLoading && error && (
                     <div style={{ 
                       color: '#dc3545', 
                       textAlign: 'center', 
@@ -173,12 +177,13 @@ export default function ChildMoveOpportunities() {
                       </button>
                     </div>
                   )}
-                  {!loading && !error && (
+                  {!initialLoading && !error && (
                     <ChartCard 
                       coinData={coinData} 
                       coinHistory={coinHistory}
                       selectedTimeframe={selectedTimeframe}
                       onTimeframeChange={setSelectedTimeframe}
+                      isLoading={loading}
                     />
                   )}
                 </div>
