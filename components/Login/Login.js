@@ -135,6 +135,14 @@ export default function Login() {
       <div className="login-box">
         <PageLogo />
         <h1 className={`${isDarkMode ? "dark" : ""}`}>Login</h1>
+        <div className={`login-note alert ${isDarkMode ? "dark" : ""}`}>
+          <div className="alert-icon">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 1.33333C4.32 1.33333 1.33333 4.32 1.33333 8C1.33333 11.68 4.32 14.6667 8 14.6667C11.68 14.6667 14.6667 11.68 14.6667 8C14.6667 4.32 11.68 1.33333 8 1.33333ZM8 12C7.45 12 7 11.55 7 11C7 10.45 7.45 10 8 10C8.55 10 9 10.45 9 11C9 11.55 8.55 12 8 12ZM8.67 9H7.33V4.67H8.67V9Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <p>Use the same credentials as your Basecamp Trading Member Portal.</p>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="field">
             <div className="iconLeft">

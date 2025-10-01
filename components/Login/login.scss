@@ -66,6 +66,42 @@
     margin: 0 0 20px 0;
     color: #fff;
   }
+
+  .login-note.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    background: rgba(66, 125, 255, 0.1);
+    border: 1px solid rgba(66, 125, 255, 0.3);
+    border-radius: 8px;
+    
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.4;
+
+    .alert-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+    }
+
+    p {
+      margin: 0;
+      color: inherit;
+    }
+
+    &.dark {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #427dff;
+    }
+  }
   .run-button-alignment {
     margin: 20px 0 0 0;
     display: flex;

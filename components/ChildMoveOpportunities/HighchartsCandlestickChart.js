@@ -458,3 +458,5 @@ HighchartsCandlestickChart.propTypes = {
 	isDarkMode: PropTypes.bool.isRequired,
 	isLoading: PropTypes.bool
 };
+
+

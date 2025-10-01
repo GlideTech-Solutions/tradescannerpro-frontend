@@ -15,8 +15,12 @@
       }
 
       h4 {
+        letter-spacing: 1px;
+        line-height: 20px;
+        font-weight: 400;
         padding-top: 10px;
-        color: #000;
+        color: #8BB9FF;
+        
         &.dark {
           color: #fff;
         }
