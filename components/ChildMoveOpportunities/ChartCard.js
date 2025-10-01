@@ -162,10 +162,12 @@ export default function ChartCard({ coinData, coinHistory, selectedTimeframe, on
 		return data;
 	}, [data]);
 
-	// Extract coin info from coinData or use defaults
-	const coinSymbol = coinData?.symbol?.toUpperCase() || "COIN";
-	const coinName = coinData?.name || "Cryptocurrency";
-	const coinImage = coinData?.image;
+	// Extract coin info from coinHistory API (current object) or fallback to coinData
+	const current = coinHistory?.data?.current;
+	const coinSymbol = current?.symbol?.toUpperCase() || coinData?.symbol?.toUpperCase() || "COIN";
+	const coinName = current?.name || coinData?.name || "Cryptocurrency";
+	const coinImage = current?.image || coinData?.image;
+	const currentPrice = current?.current_price || coinData?.current_price;
 
 	// Extract latest candle data from API response
 	const latestCandle = useMemo(() => {
@@ -246,7 +248,7 @@ export default function ChartCard({ coinData, coinHistory, selectedTimeframe, on
 					</div> */}
 					<div className="volume-info" style={{ marginTop: "5px" }}>
 						<h3 className={`${isDarkMode ? "dark" : ""}`}>
-							{formatPrice(coinData?.current_price)}
+							{formatPrice(currentPrice)}
 						</h3>
 					</div>
 				</div>
@@ -260,7 +262,7 @@ export default function ChartCard({ coinData, coinHistory, selectedTimeframe, on
 						<>
 							<span style={{ 
 								fontSize: '12px',
-								color: isDarkMode ? '#bcd3e5' : '#bcd3e5',
+								color: '#bcd3e5',
 								marginRight: '15px',
 								display:'flex',
 								alignItems:'center',

@@ -11,12 +11,12 @@ export default function PageLogo() {
         <div className='pageLogo-section' onClick={() => router.push('/')}>
             {isDarkMode ? (
                 <div>
-                    <img src="/assets/logo/tsp-black.png" alt='white logo' />
+                    <img src="/assets/logo/white-logo.svg" alt='white logo' />
                 </div>
             ) : (
 
                 <div>
-                    <img src="/assets/logo/tsp-white.png" alt='logo' />
+                    <img src="/assets/logo/logo.svg" alt='logo' />
                 </div>
             )
             }

@@ -125,9 +125,9 @@ export default function PageHeader() {
 					onClick={() => router.push("/")}
 				>
 					{isDarkMode ? (
-						<img src="/assets/logo/tsp-dark1.png" alt="logo" />
+						<img src="/assets/logo/white-logo.svg" alt="logo" />
 					) : (
-						<img src="/assets/logo/tsp-dark1.png" alt="logo" />
+						<img src="/assets/logo/logo.svg" alt="logo" />
 					)}
 				</button>
 

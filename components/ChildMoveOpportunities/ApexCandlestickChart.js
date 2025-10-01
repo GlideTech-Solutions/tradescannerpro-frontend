@@ -617,16 +617,28 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
 						trim: false,
-						hideOverlappingLabels: false,
+						hideOverlappingLabels: true,
 						showDuplicates: false,
 						maxHeight: 40,
 						datetimeUTC: false,
 						formatter: function(value, timestamp) {
 							const date = new Date(timestamp);
-							return date.getDate().toString();
+							
+							// Format based on timeframe
+							if (timeframe === '1d') {
+								const hours = date.getHours().toString().padStart(2, '0');
+								const minutes = date.getMinutes().toString().padStart(2, '0');
+								return `${hours}:${minutes}`;
+							} else if (timeframe === '7d') {
+								const month = date.toLocaleString('en-US', { month: 'short' });
+								const day = date.getDate();
+								return `${month} ${day}`;
+							} else {
+								return date.getDate().toString();
+							}
 						}
 					},
-					tickAmount: processedSeries.length - 1,
+					tickAmount: timeframe === '1d' ? 6 : timeframe === '7d' ? 7 : processedSeries.length > 10 ? 10 : processedSeries.length - 1,
 					tickPlacement: 'between'
 				},
 				yaxis: {
@@ -680,16 +692,28 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
 						trim: false,
-						hideOverlappingLabels: false,
+						hideOverlappingLabels: true,
 						showDuplicates: false,
 						maxHeight: 50,
 						datetimeUTC: false,
 						formatter: function(value, timestamp) {
 							const date = new Date(timestamp);
-							return date.getDate().toString();
+							
+							// Format based on timeframe
+							if (timeframe === '1d') {
+								const hours = date.getHours().toString().padStart(2, '0');
+								const minutes = date.getMinutes().toString().padStart(2, '0');
+								return `${hours}:${minutes}`;
+							} else if (timeframe === '7d') {
+								const month = date.toLocaleString('en-US', { month: 'short' });
+								const day = date.getDate();
+								return `${month} ${day}`;
+							} else {
+								return date.getDate().toString();
+							}
 						}
 					},
-					tickAmount: processedSeries.length - 1,
+					tickAmount: timeframe === '1d' ? 8 : timeframe === '7d' ? 7 : processedSeries.length > 12 ? 12 : processedSeries.length - 1,
 					tickPlacement: 'between'
 				},
 				yaxis: {
@@ -743,15 +767,27 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 							color: isDarkMode ? '#B0B0B0' : '#374151'
 						},
 						trim: false,
-						hideOverlappingLabels: false,
+						hideOverlappingLabels: true,
 						showDuplicates: false,
 						datetimeUTC: false,
 						formatter: function(value, timestamp) {
 							const date = new Date(timestamp);
-							return date.getDate().toString();
+							
+							// Format based on timeframe
+							if (timeframe === '1d') {
+								const hours = date.getHours().toString().padStart(2, '0');
+								const minutes = date.getMinutes().toString().padStart(2, '0');
+								return `${hours}:${minutes}`;
+							} else if (timeframe === '7d') {
+								const month = date.toLocaleString('en-US', { month: 'short' });
+								const day = date.getDate();
+								return `${month} ${day}`;
+							} else {
+								return date.getDate().toString();
+							}
 						}
 					},
-					tickAmount: processedSeries.length - 1,
+					tickAmount: timeframe === '1d' ? 10 : timeframe === '7d' ? 7 : processedSeries.length > 15 ? 15 : processedSeries.length - 1,
 					tickPlacement: 'between'
 				},
 				yaxis: {
