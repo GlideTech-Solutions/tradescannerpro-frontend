@@ -6,13 +6,14 @@ import PropTypes from 'prop-types';
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Initialize theme from localStorage on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
-    const isDark = savedTheme === 'dark';
+    // Default to dark mode if no saved preference
+    const isDark = savedTheme === null ? true : savedTheme === 'dark';
     setIsDarkMode(isDark);
     
     // Apply theme class to document

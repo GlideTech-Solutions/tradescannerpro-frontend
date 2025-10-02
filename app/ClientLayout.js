@@ -19,7 +19,7 @@ export default function ClientLayout({ children }) {
   if (pathname?.startsWith('/market-breakouts')) {
     darkSrc = '/assets/video/coinpulse-gradient-with-loader-dark.mp4';
     lightSrc = '/assets/video/light_marketBreakout.mp4';
-    videoHeight = 'calc(100vh - -280px)'; // account for header height
+    videoHeight = 'calc(100vh - -580px)'; // account for header height
     // top remains '0' for bottom align
   }
 

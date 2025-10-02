@@ -73,11 +73,15 @@ export default function MarketBreakouts() {
               {isLoading ? "Scanning..." : "Scanning Market..."}
             </button>
           </div>
-            <div className={`scanning-speech-bubble ${isDarkMode ? "dark" : ""}`}>
+          <h4 className={`${isDarkMode ? "dark" : ""}`}>
+
+          Scanning the blockchain noise... couple of minutes till we catch the signals.
+          </h4>
+            {/* <div className={`scanning-speech-bubble ${isDarkMode ? "dark" : ""}`}>
                 <p>
                   Scanning the blockchain noise... couple of minutes till we catch the signals.
                 </p>
-              </div>
+              </div> */}
           <div></div>
           {error && (
             <div className="scan-error" style={{ color: "red", marginTop: 8 }}>

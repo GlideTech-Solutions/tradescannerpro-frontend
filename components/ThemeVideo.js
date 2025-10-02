@@ -1,13 +1,42 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '../context/ThemeContext';
 
 export default function ThemeVideo({ darkSrc, lightSrc, className = '', style = {}, ...props }) {
     const { isDarkMode, isInitialized } = useTheme();
     const [mounted, setMounted] = useState(false);
+    const videoRef = useRef(null);
 
     useEffect(() => setMounted(true), []);
+
+    // Force play on mobile devices
+    useEffect(() => {
+        if (!videoRef.current) return;
+
+        const playVideo = async () => {
+            try {
+                // Wait for video to be ready
+                if (videoRef.current.readyState >= 2) {
+                    await videoRef.current.play();
+                } else {
+                    // If not ready, wait for loadeddata event
+                    videoRef.current.addEventListener('loadeddata', async () => {
+                        try {
+                            await videoRef.current.play();
+                        } catch (error) {
+                            console.log('Video autoplay prevented:', error);
+                        }
+                    }, { once: true });
+                }
+            } catch (error) {
+                console.log('Video autoplay prevented:', error);
+            }
+        };
+
+        playVideo();
+    }, [isDarkMode, mounted]);
+
     if (!mounted || !isInitialized) return null;
 
     // Default styles for full background video
@@ -24,11 +53,13 @@ export default function ThemeVideo({ darkSrc, lightSrc, className = '', style = 
 
     return (
         <video
+            ref={videoRef}
             key={isDarkMode ? 'dark' : 'light'}
             autoPlay
             muted
             loop
             playsInline
+            preload="auto"
             className={`theme-bg-video ${className}`.trim()}
             style={defaultStyle}
             {...props}
