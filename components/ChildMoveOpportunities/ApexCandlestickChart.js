@@ -353,10 +353,14 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 
 	// Chart configuration
 	const options = {
+		theme: {
+			mode: isDarkMode ? 'dark' : 'light',
+		},
 		chart: {
 			type: 'candlestick',
 			height: chartHeight,
 			background: 'transparent',
+			foreColor: isDarkMode ? '#FFFFFF' : '#000000',
 			toolbar: {
 				show: true,
 				tools: {
@@ -408,7 +412,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				style: {
 					fontSize: fontSize,
 					fontWeight: 500,
-					color: isDarkMode ? '#B0B0B0' : '#374151'
+					color: isDarkMode ? '#FFFFFF' : '#000000'
 				},
 				rotate: 0,
 				rotateAlways: false,
@@ -457,7 +461,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 				style: {
 					fontSize: fontSize,
 					fontWeight: 500,
-					color: isDarkMode ? '#B0B0B0' : '#374151'
+					color: isDarkMode ? '#FFFFFF' : '#000000'
 				},
 				formatter: (value) => formatYAxisLabel(value)
 			},
@@ -614,7 +618,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						rotateAlways: false,
 						style: {
 							fontSize: '9px',
-							color: isDarkMode ? '#B0B0B0' : '#374151'
+							color: isDarkMode ? '#FFFFFF' : '#000000'
 						},
 						trim: false,
 						hideOverlappingLabels: true,
@@ -646,7 +650,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						show: true,
 						style: {
 							fontSize: '9px',
-							color: isDarkMode ? '#B0B0B0' : '#374151'
+							color: isDarkMode ? '#FFFFFF' : '#000000'
 						},
 						formatter: (value) => formatYAxisLabel(value),
 						maxWidth: 50
@@ -689,7 +693,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						rotateAlways: false,
 						style: {
 							fontSize: '10px',
-							color: isDarkMode ? '#B0B0B0' : '#374151'
+							color: isDarkMode ? '#FFFFFF' : '#000000'
 						},
 						trim: false,
 						hideOverlappingLabels: true,
@@ -721,7 +725,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						show: true,
 						style: {
 							fontSize: '10px',
-							color: isDarkMode ? '#B0B0B0' : '#374151'
+							color: isDarkMode ? '#FFFFFF' : '#000000'
 						},
 						formatter: (value) => formatYAxisLabel(value),
 						maxWidth: 60
@@ -764,7 +768,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						rotateAlways: false,
 						style: {
 							fontSize: '11px',
-							color: isDarkMode ? '#B0B0B0' : '#374151'
+							color: isDarkMode ? '#FFFFFF' : '#000000'
 						},
 						trim: false,
 						hideOverlappingLabels: true,
@@ -795,7 +799,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 						show: true,
 						style: {
 							fontSize: '11px',
-							color: isDarkMode ? '#B0B0B0' : '#374151'
+							color: isDarkMode ? '#FFFFFF' : '#000000'
 						},
 						formatter: (value) => formatYAxisLabel(value)
 					},
@@ -824,6 +828,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 			minHeight: '300px'
 		}}>
 			<Chart
+				key={`chart-${isDarkMode ? 'dark' : 'light'}-${timeframe}`}
 				options={options}
 				series={series}
 				type="candlestick"
