@@ -441,7 +441,7 @@ export default function ApexCandlestickChart({ data, isDarkMode, isLoading = fal
 					}
 				}
 			},
-			tickAmount: timeframe === '1d' ? 12 : timeframe === '7d' ? 7 : processedSeries.length > 15 ? 15 : processedSeries.length - 1,
+			tickAmount: timeframe === '1d' ? 12 : timeframe === '7d' ? 7 : processedSeries.length > 30 ? 30 : processedSeries.length - 1,
 			tickPlacement: 'between',
 			axisBorder: {
 				show: true,
